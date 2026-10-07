@@ -1,0 +1,119 @@
+// TerAuth Prisma Schema - PostgreSQL
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum InstitutionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  INSTITUTION_ADMIN
+  ORGANIZATION_ADMIN
+  PUBLIC_VERIFIER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum CertificateStatus {
+  ACTIVE
+  REVOKED
+}
+
+enum VerificationResult {
+  VALID
+  REVOKED
+  INVALID
+}
+
+model Institution {
+  id              String            @id @default(uuid())
+  institutionId   String            @unique
+  name            String
+  officialEmail   String            @unique
+  contactNumber   String?
+  address         String?
+  type            String
+  status          InstitutionStatus @default(PENDING)
+  rejectionReason String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  users           User[]
+  certificates    Certificate[]
+
+  @@index([status])
+  @@index([name])
+}
+
+model User {
+  id               String       @id @default(uuid())
+  userId           String       @unique
+  username         String       @unique
+  email            String       @unique
+  passwordHash     String
+  role             UserRole     @default(PUBLIC_VERIFIER)
+  status           UserStatus   @default(ACTIVE)
+  institutionId    String?
+  refreshTokenHash String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  institution      Institution? @relation(fields: [institutionId], references: [id], onDelete: SetNull)
+
+  @@index([role])
+  @@index([institutionId])
+}
+
+model Certificate {
+  id               String             @id @default(uuid())
+  certificateId    String             @unique
+  studentName      String
+  degree           String
+  department       String
+  issueDate        DateTime
+  qrCodeUrl        String
+  institutionId    String
+  status           CertificateStatus  @default(ACTIVE)
+  revocationReason String?
+  revokedAt        DateTime?
+  metadata         String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  institution      Institution        @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  verificationLogs VerificationLog[]
+
+  @@index([certificateId])
+  @@index([studentName])
+  @@index([status])
+  @@index([institutionId])
+}
+
+model VerificationLog {
+  id            String             @id @default(uuid())
+  certificateId String?
+  queriedId     String
+  result        VerificationResult
+  ipAddress     String?
+  userAgent     String?
+  timestamp     DateTime           @default(now())
+
+  certificate   Certificate?       @relation(fields: [certificateId], references: [id], onDelete: SetNull)
+
+  @@index([queriedId])
+  @@index([timestamp])
+  @@index([result])
+}

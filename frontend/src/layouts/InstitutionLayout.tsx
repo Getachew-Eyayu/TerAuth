@@ -1,0 +1,37 @@
+import React from 'react';
+import { Outlet, Navigate } from 'react-router-dom';
+import { Sidebar } from '../components/common/Sidebar';
+import { useAuth } from '../context/AuthContext';
+import { RefreshCw } from 'lucide-react';
+
+export const InstitutionLayout: React.FC = () => {
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-900 text-white space-y-3">
+        <RefreshCw className="w-8 h-8 animate-spin text-blue-500" />
+        <p className="text-xs text-slate-400">Verifying institutional credentials...</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (user.role !== 'INSTITUTION_ADMIN' && user.role !== 'SUPER_ADMIN') {
+    return <Navigate to="/" replace />;
+  }
+
+  return (
+    <div className="min-h-screen flex bg-slate-50">
+      <Sidebar />
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        <main className="flex-1 p-6 sm:p-8 max-w-7xl w-full mx-auto">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+};

@@ -1,0 +1,76 @@
+// TerAuth Prisma Schema
+// Note: Configured for SQLite by default for zero-configuration local execution and testing.
+// To switch to PostgreSQL, configure DATABASE_URL in .env and run: npm run db:use-postgres
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Institution {
+  id              String   @id @default(uuid())
+  institutionId   String   @unique
+  name            String
+  officialEmail   String   @unique
+  contactNumber   String?
+  address         String?
+  type            String
+  status          String   @default("PENDING") // PENDING, APPROVED, REJECTED, SUSPENDED
+  rejectionReason String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  users           User[]
+  certificates    Certificate[]
+}
+
+model User {
+  id               String       @id @default(uuid())
+  userId           String       @unique
+  username         String       @unique
+  email            String       @unique
+  passwordHash     String
+  role             String       @default("PUBLIC_VERIFIER") // SUPER_ADMIN, INSTITUTION_ADMIN, ORGANIZATION_ADMIN, PUBLIC_VERIFIER
+  status           String       @default("ACTIVE") // ACTIVE, INACTIVE
+  institutionId    String?
+  refreshTokenHash String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  institution      Institution? @relation(fields: [institutionId], references: [id], onDelete: SetNull)
+}
+
+model Certificate {
+  id               String            @id @default(uuid())
+  certificateId    String            @unique
+  studentName      String
+  degree           String
+  department       String
+  issueDate        DateTime
+  qrCodeUrl        String
+  institutionId    String
+  status           String            @default("ACTIVE") // ACTIVE, REVOKED
+  revocationReason String?
+  revokedAt        DateTime?
+  metadata         String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  institution      Institution       @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  verificationLogs VerificationLog[]
+}
+
+model VerificationLog {
+  id            String       @id @default(uuid())
+  certificateId String?
+  queriedId     String
+  result        String       // VALID, REVOKED, INVALID
+  ipAddress     String?
+  userAgent     String?
+  timestamp     DateTime     @default(now())
+
+  certificate   Certificate? @relation(fields: [certificateId], references: [id], onDelete: SetNull)
+}

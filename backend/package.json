@@ -1,0 +1,47 @@
+{
+  "name": "terauth-backend",
+  "version": "1.0.0",
+  "description": "Secure National Digital Certificate Authentication & Verification Platform API",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "node node_modules/typescript/bin/tsc",
+    "start": "node dist/server.js",
+    "dev": "node node_modules/tsx/dist/cli.mjs watch src/server.ts",
+    "prisma:generate": "node node_modules/prisma/build/index.js generate",
+    "prisma:push": "node node_modules/prisma/build/index.js db push --accept-data-loss",
+    "prisma:migrate": "node node_modules/prisma/build/index.js migrate dev",
+    "prisma:seed": "node node_modules/tsx/dist/cli.mjs prisma/seed.ts",
+    "db:use-postgres": "copy /Y prisma\\schema.postgresql.prisma prisma\\schema.prisma && node node_modules/prisma/build/index.js generate",
+    "db:use-sqlite": "copy /Y prisma\\schema.sqlite.prisma prisma\\schema.prisma && node node_modules/prisma/build/index.js generate",
+    "test": "node node_modules/jest/bin/jest.js --detectOpenHandles --forceExit"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "nanoid": "^3.3.7",
+    "qrcode": "^1.5.4",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.14",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^20.17.6",
+    "@types/qrcode": "^1.5.5",
+    "@types/supertest": "^6.0.2",
+    "jest": "^29.7.0",
+    "prisma": "^5.22.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}
