@@ -10,6 +10,7 @@ import dashboardRoutes from './routes/dashboard.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import { requestLogger } from './middleware/requestLogger.middleware.js';
 import { csrfProtection } from './middleware/csrf.middleware.js';
+import prisma from './prisma.js';
 
 const app: Express = express();
 
@@ -105,14 +106,39 @@ app.use((req: Request, res: Response, next) => {
 // Anti-CSRF Protection
 app.use(csrfProtection);
 
-// Health Check
-app.get('/api/health', (req: Request, res: Response) => {
-  res.status(200).json({
-    status: 'healthy',
+// Health Check - General Status
+app.get('/api/health', async (req: Request, res: Response) => {
+  let dbStatus = 'connected';
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+  } catch (err) {
+    dbStatus = 'disconnected';
+  }
+
+  const isHealthy = dbStatus === 'connected';
+  res.status(isHealthy ? 200 : 503).json({
+    status: isHealthy ? 'healthy' : 'degraded',
     service: 'TerAuth National Certificate Verification Platform API',
+    database: dbStatus,
     timestamp: new Date().toISOString(),
+    uptimeSeconds: Math.floor(process.uptime()),
     version: '1.0.0',
   });
+});
+
+// Kubernetes / Container Liveness Probe (process is running)
+app.get('/api/health/live', (req: Request, res: Response) => {
+  res.status(200).json({ status: 'alive' });
+});
+
+// Kubernetes / Container Readiness Probe (database is ready to serve traffic)
+app.get('/api/health/ready', async (req: Request, res: Response) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.status(200).json({ status: 'ready', database: 'connected' });
+  } catch (error) {
+    res.status(503).json({ status: 'unready', database: 'disconnected' });
+  }
 });
 
 // API Routes
