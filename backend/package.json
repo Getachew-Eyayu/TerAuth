@@ -10,6 +10,8 @@
     "prisma:generate": "node node_modules/prisma/build/index.js generate",
     "prisma:push": "node node_modules/prisma/build/index.js db push --accept-data-loss",
     "prisma:migrate": "node node_modules/prisma/build/index.js migrate dev",
+    "prisma:migrate:deploy": "node node_modules/prisma/build/index.js migrate deploy",
+    "prisma:migrate:status": "node node_modules/prisma/build/index.js migrate status",
     "prisma:seed": "node node_modules/tsx/dist/cli.mjs prisma/seed.ts",
     "db:use-postgres": "copy /Y prisma\\schema.postgresql.prisma prisma\\schema.prisma && node node_modules/prisma/build/index.js generate",
     "db:use-sqlite": "copy /Y prisma\\schema.sqlite.prisma prisma\\schema.prisma && node node_modules/prisma/build/index.js generate",
