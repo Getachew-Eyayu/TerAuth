@@ -18,27 +18,46 @@ app.use(
   })
 );
 
-// CORS Setup
-const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:5173',
+// CORS Configuration
+const envOrigins = (process.env.ALLOWED_ORIGINS || process.env.FRONTEND_URL || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+const defaultDevOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   'http://127.0.0.1:5173',
+  'http://localhost:4173',
 ];
+
+const allowedOrigins = Array.from(
+  new Set([...envOrigins, ...(process.env.NODE_ENV !== 'production' ? defaultDevOrigins : [])])
+);
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, postman)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(null, true); // Permissive in development
+      // Allow requests with no origin (e.g. mobile apps, curl, internal server requests)
+      if (!origin) {
+        return callback(null, true);
       }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      if (process.env.NODE_ENV === 'production') {
+        return callback(new Error(`Origin '${origin}' is not permitted by CORS policy`));
+      }
+
+      // Permissive with warning in development environments only
+      return callback(null, true);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
+    exposedHeaders: ['X-Request-Id'],
   })
 );
 
