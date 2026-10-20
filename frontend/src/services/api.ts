@@ -54,6 +54,27 @@ api.interceptors.response.use(
         }
       }
     }
+
+    // Exponential backoff retry for transient network drops and 429 / 503 responses on GET requests
+    const isIdempotent = originalRequest?.method?.toLowerCase() === 'get';
+    const isTransientError = !error.response || error.response.status === 429 || error.response.status === 503;
+
+    if (isIdempotent && isTransientError && originalRequest) {
+      originalRequest._retryCount = originalRequest._retryCount || 0;
+      const MAX_RETRIES = 2;
+
+      if (originalRequest._retryCount < MAX_RETRIES) {
+        originalRequest._retryCount += 1;
+        const retryAfterHeader = error.response?.headers?.['retry-after'];
+        const delayMs = retryAfterHeader
+          ? parseInt(retryAfterHeader, 10) * 1000
+          : Math.pow(2, originalRequest._retryCount) * 750;
+
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+        return api(originalRequest);
+      }
+    }
+
     return Promise.reject(error);
   }
 );
