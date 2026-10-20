@@ -38,20 +38,19 @@ api.interceptors.response.use(
           { refreshToken },
           { withCredentials: true }
         );
-          if (res.data.success) {
-            localStorage.setItem('terauth_token', res.data.data.accessToken);
-            localStorage.setItem('terauth_refresh_token', res.data.data.refreshToken);
-            originalRequest.headers.Authorization = `Bearer ${res.data.data.accessToken}`;
-            return api(originalRequest);
-          }
-        } catch (refreshError) {
-          localStorage.removeItem('terauth_token');
-          localStorage.removeItem('terauth_refresh_token');
-          localStorage.removeItem('terauth_user');
-          // If on a protected route, redirect to login
-          if (window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/institution')) {
-            window.location.href = '/login';
-          }
+        if (res.data.success) {
+          localStorage.setItem('terauth_token', res.data.data.accessToken);
+          localStorage.setItem('terauth_refresh_token', res.data.data.refreshToken);
+          originalRequest.headers.Authorization = `Bearer ${res.data.data.accessToken}`;
+          return api(originalRequest);
+        }
+      } catch (refreshError) {
+        localStorage.removeItem('terauth_token');
+        localStorage.removeItem('terauth_refresh_token');
+        localStorage.removeItem('terauth_user');
+        // If on a protected route, redirect to login
+        if (window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/institution')) {
+          window.location.href = '/login';
         }
       }
     }
