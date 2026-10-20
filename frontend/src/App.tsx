@@ -13,6 +13,8 @@ import { LandingPage } from './pages/public/LandingPage';
 import { VerifyPage } from './pages/public/VerifyPage';
 import { LoginPage } from './pages/public/LoginPage';
 import { RegisterInstitutionPage } from './pages/public/RegisterInstitutionPage';
+import { PrivacyPolicyPage } from './pages/public/PrivacyPolicyPage';
+import { TermsPage } from './pages/public/TermsPage';
 
 // Super Admin Pages
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
@@ -42,6 +44,8 @@ export function App() {
               <Route path="/verify/:certificateId" element={<VerifyPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register-institution" element={<RegisterInstitutionPage />} />
+              <Route path="/privacy" element={<PrivacyPolicyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
             </Route>
 
             {/* Super Admin Protected Routes */}

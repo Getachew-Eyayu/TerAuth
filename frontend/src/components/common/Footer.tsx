@@ -55,7 +55,9 @@ export const Footer: React.FC = () => {
 
         <div className="pt-8 border-t border-navy-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
           <p>© {new Date().getFullYear()} TerAuth Platform. All rights reserved.</p>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
+            <Link to="/privacy" className="hover:text-slate-300 transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-slate-300 transition-colors">Terms of Service</Link>
             <span className="inline-flex items-center gap-1 text-slate-400">
               <FileCheck className="w-3.5 h-3.5 text-blue-400" />
               <span>Cryptographic Identity Protocol</span>
