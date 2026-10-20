@@ -9,6 +9,7 @@ import userRoutes from './routes/user.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import { requestLogger } from './middleware/requestLogger.middleware.js';
+import { csrfProtection } from './middleware/csrf.middleware.js';
 
 const app: Express = express();
 
@@ -57,7 +58,7 @@ app.use(
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id', 'X-CSRF-Token'],
     exposedHeaders: ['X-Request-Id'],
   })
 );
@@ -82,6 +83,9 @@ app.use((req: Request, res: Response, next) => {
   (req as any).cookies = cookies;
   next();
 });
+
+// Anti-CSRF Protection
+app.use(csrfProtection);
 
 // Health Check
 app.get('/api/health', (req: Request, res: Response) => {
