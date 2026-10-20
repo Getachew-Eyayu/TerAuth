@@ -55,4 +55,18 @@ describe('Public Verification API Tests', () => {
     expect(log).not.toBeNull();
     expect(log?.result).toBe('VALID');
   });
+
+  it('should attach X-Request-Id header to every response for distributed tracing', async () => {
+    const res = await request(app).get('/api/health');
+    expect(res.status).toBe(200);
+    expect(res.headers['x-request-id']).toBeDefined();
+    expect(res.headers['x-request-id']).toMatch(/^REQ-/);
+
+    // Should preserve client-supplied request ID
+    const customId = 'REQ-client-trace-12345';
+    const customRes = await request(app)
+      .get('/api/health')
+      .set('X-Request-Id', customId);
+    expect(customRes.headers['x-request-id']).toBe(customId);
+  });
 });

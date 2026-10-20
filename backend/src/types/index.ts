@@ -15,6 +15,15 @@ export interface TokenPayload {
   institutionId?: string | null;
 }
 
+declare global {
+  namespace Express {
+    interface Request {
+      requestId?: string;
+    }
+  }
+}
+
 export interface AuthenticatedRequest extends Request {
   user?: TokenPayload;
+  requestId?: string;
 }

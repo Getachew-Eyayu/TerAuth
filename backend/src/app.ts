@@ -8,6 +8,7 @@ import verificationRoutes from './routes/verification.routes.js';
 import userRoutes from './routes/user.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
+import { requestLogger } from './middleware/requestLogger.middleware.js';
 
 const app: Express = express();
 
@@ -60,6 +61,9 @@ app.use(
     exposedHeaders: ['X-Request-Id'],
   })
 );
+
+// Correlation ID & Request Logging
+app.use(requestLogger);
 
 // Body Parser
 app.use(express.json({ limit: '10mb' }));
