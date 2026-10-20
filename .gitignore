@@ -14,13 +14,17 @@ build/
 .env.*.local
 *.env
 
-# SQLite Database
+# SQLite & Backup Databases
 *.db
 *.db-journal
 *.db-wal
 *.db-shm
 prisma/*.db
 prisma/*.db-journal
+backups/
+*.dump
+*.dump.gz
+*.sha256
 
 # Logs
 logs/
