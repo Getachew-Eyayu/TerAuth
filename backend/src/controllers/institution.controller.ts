@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import crypto from 'crypto';
 import prisma from '../prisma.js';
 import { AuthService } from '../services/auth.service.js';
+import { AuditService } from '../services/audit.service.js';
 import { AuthenticatedRequest } from '../types/index.js';
 
 export class InstitutionController {
@@ -252,6 +253,15 @@ export class InstitutionController {
         },
       });
 
+      await AuditService.logAdminAction({
+        actorId: req.user?.id,
+        actorUsername: req.user?.username,
+        action: 'INSTITUTION_APPROVED',
+        targetType: 'INSTITUTION',
+        targetId: institution.institutionId,
+        ipAddress: req.ip,
+      });
+
       res.status(200).json({
         success: true,
         message: `Institution '${updated.name}' has been successfully approved.`,
@@ -290,6 +300,16 @@ export class InstitutionController {
         },
       });
 
+      await AuditService.logAdminAction({
+        actorId: req.user?.id,
+        actorUsername: req.user?.username,
+        action: 'INSTITUTION_REJECTED',
+        targetType: 'INSTITUTION',
+        targetId: institution.institutionId,
+        reason: reason || null,
+        ipAddress: req.ip,
+      });
+
       res.status(200).json({
         success: true,
         message: `Institution '${updated.name}' has been rejected.`,
@@ -326,6 +346,16 @@ export class InstitutionController {
           status,
           rejectionReason: reason || null,
         },
+      });
+
+      await AuditService.logAdminAction({
+        actorId: req.user?.id,
+        actorUsername: req.user?.username,
+        action: `INSTITUTION_STATUS_${status}`,
+        targetType: 'INSTITUTION',
+        targetId: institution.institutionId,
+        reason: reason || null,
+        ipAddress: req.ip,
       });
 
       res.status(200).json({

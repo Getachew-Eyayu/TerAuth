@@ -27,4 +27,33 @@ export class AuditService {
       return null;
     }
   }
+
+  /**
+   * Logs administrative privilege actions (approval, rejection, revocation, suspension)
+   */
+  static async logAdminAction(params: {
+    actorId?: string;
+    actorUsername?: string;
+    action: string;
+    targetType: string;
+    targetId: string;
+    reason?: string | null;
+    ipAddress?: string;
+  }): Promise<void> {
+    try {
+      const { logger } = await import('../utils/logger.js');
+      logger.info(`ADMIN ACTION [${params.action}] performed on ${params.targetType} ${params.targetId}`, {
+        actorId: params.actorId || 'system',
+        actorUsername: params.actorUsername || 'unknown',
+        action: params.action,
+        targetType: params.targetType,
+        targetId: params.targetId,
+        reason: params.reason || null,
+        ipAddress: params.ipAddress || 'internal',
+        timestamp: new Date().toISOString(),
+      });
+    } catch (err) {
+      console.error('Failed to log admin action:', err);
+    }
+  }
 }
