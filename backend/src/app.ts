@@ -65,9 +65,23 @@ app.use(
 // Correlation ID & Request Logging
 app.use(requestLogger);
 
-// Body Parser
+// Body Parser & Cookie Support
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use((req: Request, res: Response, next) => {
+  const cookieHeader = req.headers.cookie;
+  const cookies: Record<string, string> = {};
+  if (cookieHeader) {
+    cookieHeader.split(';').forEach((cookie) => {
+      const [name, ...rest] = cookie.trim().split('=');
+      if (name && rest.length > 0) {
+        cookies[name.trim()] = decodeURIComponent(rest.join('='));
+      }
+    });
+  }
+  (req as any).cookies = cookies;
+  next();
+});
 
 // Health Check
 app.get('/api/health', (req: Request, res: Response) => {

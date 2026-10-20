@@ -4,6 +4,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -29,9 +30,12 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       const refreshToken = localStorage.getItem('terauth_refresh_token');
-      if (refreshToken) {
-        try {
-          const res = await axios.post(`${API_BASE_URL}/auth/refresh`, { refreshToken });
+      try {
+        const res = await axios.post(
+          `${API_BASE_URL}/auth/refresh`,
+          { refreshToken },
+          { withCredentials: true }
+        );
           if (res.data.success) {
             localStorage.setItem('terauth_token', res.data.data.accessToken);
             localStorage.setItem('terauth_refresh_token', res.data.data.refreshToken);

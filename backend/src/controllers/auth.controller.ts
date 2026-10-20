@@ -94,6 +94,14 @@ export class AuthController {
         data: { refreshTokenHash },
       });
 
+      res.cookie('terauth_refresh_token', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/api/auth',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
       res.status(200).json({
         success: true,
         message: 'Login successful',
@@ -127,11 +135,19 @@ export class AuthController {
   }
 
   /**
-   * Rotate access token using valid refresh token
+   * Rotate access token using valid refresh token (supports cookie and body)
    */
   static async refreshToken(req: Request, res: Response): Promise<void> {
     try {
-      const { refreshToken } = req.body;
+      const refreshToken = (req as any).cookies?.terauth_refresh_token || req.body?.refreshToken;
+
+      if (!refreshToken) {
+        res.status(401).json({
+          success: false,
+          message: 'Refresh token required',
+        });
+        return;
+      }
 
       const decoded = AuthService.verifyRefreshToken(refreshToken);
       const user = await prisma.user.findUnique({
@@ -174,6 +190,14 @@ export class AuthController {
         data: { refreshTokenHash: newHash },
       });
 
+      res.cookie('terauth_refresh_token', newRefreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/api/auth',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
       res.status(200).json({
         success: true,
         data: {
@@ -190,10 +214,17 @@ export class AuthController {
   }
 
   /**
-   * Logout user by invalidating refresh token
+   * Logout user by invalidating refresh token and clearing authentication cookie
    */
   static async logout(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
+      res.clearCookie('terauth_refresh_token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/api/auth',
+      });
+
       if (req.user?.id) {
         await prisma.user.update({
           where: { id: req.user.id },
