@@ -1,0 +1,74 @@
+services:
+  # ==========================================
+  # PostgreSQL Database
+  # ==========================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: terauth-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_secure_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-terauth}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-terauth}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - terauth-net
+
+  # ==========================================
+  # TerAuth Backend API
+  # ==========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: terauth-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres_secure_dev_password}@postgres:5432/${POSTGRES_DB:-terauth}?schema=public
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-terauth_prod_jwt_access_secret_sample_key_2026_xyz}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-terauth_prod_jwt_refresh_secret_sample_key_2026_xyz}
+      JWT_ACCESS_EXPIRES_IN: 15m
+      JWT_REFRESH_EXPIRES_IN: 7d
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:80,http://localhost:3000}
+    ports:
+      - "5000:5000"
+    networks:
+      - terauth-net
+
+  # ==========================================
+  # TerAuth Frontend Web Portal
+  # ==========================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: terauth-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+    networks:
+      - terauth-net
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  terauth-net:
+    driver: bridge

@@ -1,0 +1,14 @@
+node_modules
+*/node_modules
+dist
+*/dist
+.git
+.github
+*.log
+npm-debug.log*
+.env
+.env.local
+.DS_Store
+*.db
+*.db-journal
+backend/prisma/*.db
