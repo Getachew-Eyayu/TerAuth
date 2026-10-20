@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { AuthenticatedRequest } from '../types/index.js';
 import { CertificateService } from '../services/certificate.service.js';
 import { AuditService } from '../services/audit.service.js';
 import prisma from '../prisma.js';
@@ -125,7 +126,7 @@ export class VerificationController {
   /**
    * Get Verification Logs (Filtered by role: Super Admin sees all, Institution Admin sees their own)
    */
-  static async getLogs(req: any, res: Response): Promise<void> {
+  static async getLogs(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const { search, result, page = '1', limit = '20' } = req.query;
 

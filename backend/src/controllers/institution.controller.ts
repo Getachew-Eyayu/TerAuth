@@ -210,6 +210,15 @@ export class InstitutionController {
         return;
       }
 
+      // Authorization scoping: INSTITUTION_ADMIN can only view their own institution details
+      if (req.user?.role === 'INSTITUTION_ADMIN' && req.user.institutionId !== institution.id) {
+        res.status(403).json({
+          success: false,
+          message: 'Access restricted: You may only view details for your assigned institution.',
+        });
+        return;
+      }
+
       res.status(200).json({ success: true, data: institution });
     } catch (error: any) {
       res.status(500).json({

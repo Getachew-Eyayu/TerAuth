@@ -106,6 +106,7 @@ export class AuthController {
             username: user.username,
             email: user.email,
             role: user.role,
+            institutionId: user.institutionId,
             institution: user.institution
               ? {
                   id: user.institution.id,

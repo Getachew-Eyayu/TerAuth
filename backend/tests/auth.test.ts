@@ -74,4 +74,34 @@ describe('Authentication API Tests', () => {
       }
     }
   });
+
+  it('should restrict institution admin to viewing only their own institution details', async () => {
+    // Log in as AAiT admin
+    const aaitLogin = await request(app).post('/api/auth/login').send({
+      username: 'aait_admin',
+      password: 'Institution@12345',
+    });
+    const aaitToken = aaitLogin.body.data.accessToken;
+    const aaitInstId = aaitLogin.body.data.user.institutionId;
+
+    // Allowed: access own institution
+    const ownRes = await request(app)
+      .get(`/api/institutions/${aaitInstId}`)
+      .set('Authorization', `Bearer ${aaitToken}`);
+    expect(ownRes.status).toBe(200);
+    expect(ownRes.body.success).toBe(true);
+
+    // Forbidden: access another institution (NSTU)
+    const otherInst = await prisma.institution.findFirst({
+      where: { institutionId: 'INST-NSTU-002' },
+    });
+    if (otherInst) {
+      const otherRes = await request(app)
+        .get(`/api/institutions/${otherInst.id}`)
+        .set('Authorization', `Bearer ${aaitToken}`);
+      expect(otherRes.status).toBe(403);
+      expect(otherRes.body.success).toBe(false);
+      expect(otherRes.body.message).toContain('Access restricted');
+    }
+  });
 });
