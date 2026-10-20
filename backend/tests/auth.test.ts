@@ -57,4 +57,21 @@ describe('Authentication API Tests', () => {
     expect(res.body.success).toBe(true);
     expect(Array.isArray(res.body.data)).toBe(true);
   });
+
+  it('should throw fatal configuration error if JWT secret is missing or default in production', () => {
+    const originalEnv = process.env.NODE_ENV;
+    const originalSecret = process.env.JWT_ACCESS_SECRET;
+    try {
+      process.env.NODE_ENV = 'production';
+      delete process.env.JWT_ACCESS_SECRET;
+
+      const { AuthService, validateJwtConfiguration } = require('../src/services/auth.service');
+      expect(() => validateJwtConfiguration()).toThrow('FATAL CONFIGURATION ERROR');
+    } finally {
+      process.env.NODE_ENV = originalEnv;
+      if (originalSecret) {
+        process.env.JWT_ACCESS_SECRET = originalSecret;
+      }
+    }
+  });
 });

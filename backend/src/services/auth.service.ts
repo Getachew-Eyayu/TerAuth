@@ -2,8 +2,33 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { TokenPayload, UserRole } from '../types/index.js';
 
-const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'default_access_secret_change_in_production';
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'default_refresh_secret_change_in_production';
+function getJwtAccessSecret(): string {
+  const secret = process.env.JWT_ACCESS_SECRET;
+  if (!secret || secret === 'default_access_secret_change_in_production') {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('FATAL CONFIGURATION ERROR: JWT_ACCESS_SECRET must be securely configured in production environment.');
+    }
+    return 'default_access_secret_change_in_production';
+  }
+  return secret;
+}
+
+function getJwtRefreshSecret(): string {
+  const secret = process.env.JWT_REFRESH_SECRET;
+  if (!secret || secret === 'default_refresh_secret_change_in_production') {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('FATAL CONFIGURATION ERROR: JWT_REFRESH_SECRET must be securely configured in production environment.');
+    }
+    return 'default_refresh_secret_change_in_production';
+  }
+  return secret;
+}
+
+export function validateJwtConfiguration(): void {
+  getJwtAccessSecret();
+  getJwtRefreshSecret();
+}
+
 const ACCESS_EXPIRES_IN = process.env.JWT_ACCESS_EXPIRES_IN || '15m';
 const REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
 
@@ -27,7 +52,7 @@ export class AuthService {
    * Generates a signed JWT Access Token
    */
   static generateAccessToken(payload: TokenPayload): string {
-    return jwt.sign(payload, JWT_ACCESS_SECRET, {
+    return jwt.sign(payload, getJwtAccessSecret(), {
       expiresIn: ACCESS_EXPIRES_IN as any,
     });
   }
@@ -36,7 +61,7 @@ export class AuthService {
    * Generates a signed JWT Refresh Token
    */
   static generateRefreshToken(payload: { id: string; userId: string }): string {
-    return jwt.sign(payload, JWT_REFRESH_SECRET, {
+    return jwt.sign(payload, getJwtRefreshSecret(), {
       expiresIn: REFRESH_EXPIRES_IN as any,
     });
   }
@@ -45,13 +70,13 @@ export class AuthService {
    * Verifies an Access Token
    */
   static verifyAccessToken(token: string): TokenPayload {
-    return jwt.verify(token, JWT_ACCESS_SECRET) as TokenPayload;
+    return jwt.verify(token, getJwtAccessSecret()) as TokenPayload;
   }
 
   /**
    * Verifies a Refresh Token
    */
   static verifyRefreshToken(token: string): { id: string; userId: string } {
-    return jwt.verify(token, JWT_REFRESH_SECRET) as { id: string; userId: string };
+    return jwt.verify(token, getJwtRefreshSecret()) as { id: string; userId: string };
   }
 }

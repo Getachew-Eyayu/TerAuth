@@ -3,11 +3,15 @@ dotenv.config();
 
 import app from './app.js';
 import prisma from './prisma.js';
+import { validateJwtConfiguration } from './services/auth.service.js';
 
 const PORT = process.env.PORT || 5000;
 
 async function bootstrap() {
   try {
+    // Validate required authentication configuration
+    validateJwtConfiguration();
+
     // Test database connection
     await prisma.$connect();
     console.log(' Successfully connected to TerAuth database.');
