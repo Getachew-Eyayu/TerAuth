@@ -32,59 +32,7 @@ TerAuth is a centralized, web-based digital certificate authentication and verif
 
 ---
 
-## 🔑 Demo Accounts & Credentials
 
-The platform includes seed data ready for demonstration:
-
-| Role | Username | Password | Organization / Notes |
-| :--- | :--- | :--- | :--- |
-| **Super Admin** | `superadmin` | `Admin@12345` | National Registry Administration |
-| **Institution Admin** | `aait_admin` | `Institution@12345` | Addis Ababa Institute of Technology |
-| **Institution Admin** | `nstu_admin` | `Institution@12345` | National Science & Technology University |
-| **Organization Verifier** | `hr_director` | `OrgAdmin@12345` | Enterprise Verifier Account |
-
-> **Sample Verification IDs**:
-> - `TER-2026-8F4K2M9X` -> **ACTIVE / VALID** (Abebe Bikila - B.Sc. Software Engineering)
-> - `TER-2026-3P9W7L4Q` -> **ACTIVE / VALID** (Sara Yohannes - M.Sc. Cybersecurity)
-> - `TER-2026-6M2D9V1K` -> **REVOKED** (Dawit Haile - Academic integrity ruling #2026/04)
-> - `TER-9999-FAKE0001` -> **INVALID / NOT FOUND**
-
----
-
-## ⚙️ Quick Start (Running Locally)
-
-### 1. Prerequisites
-- Node.js (v18+ recommended, v24 confirmed working)
-- npm (v9+)
-
-### 2. Backend Setup
-```bash
-cd backend
-npm install
-npx prisma generate
-npm run prisma:push
-npm run prisma:seed
-npm run dev
-```
-The backend API server starts at `http://localhost:5000`.
-
-### 3. Frontend Setup
-In a new terminal window:
-```bash
-cd frontend
-npm install
-npm run dev
-```
-The frontend portal opens at `http://localhost:5173`.
-
-### 4. Running Backend Automated Tests
-```bash
-cd backend
-npm test
-```
-Executes comprehensive integration tests verifying authentication, authorization, role restrictions, certificate creation, and verification rules.
-
----
 
 ## 📁 Project Structure
 
