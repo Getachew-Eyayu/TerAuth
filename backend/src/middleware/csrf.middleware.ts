@@ -15,7 +15,7 @@ export const csrfProtection = (req: Request, res: Response, next: NextFunction):
     res.cookie('XSRF-TOKEN', newToken, {
       httpOnly: false, // Must be readable by client JS to copy into request header
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax',
       path: '/',
     });
   }

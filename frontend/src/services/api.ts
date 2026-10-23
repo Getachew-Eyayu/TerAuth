@@ -14,13 +14,21 @@ const api = axios.create({
   },
 });
 
-// Request interceptor to attach JWT Access Token
+// Request interceptor to attach JWT Access Token and Anti-CSRF token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('terauth_token');
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    if (typeof document !== 'undefined' && config.headers) {
+      const match = document.cookie.match(/(^|;\s*)XSRF-TOKEN=([^;]*)/);
+      if (match && match[2]) {
+        config.headers['X-CSRF-Token'] = decodeURIComponent(match[2]);
+      }
+    }
+
     return config;
   },
   (error) => Promise.reject(error)
