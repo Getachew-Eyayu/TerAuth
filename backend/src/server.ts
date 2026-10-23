@@ -8,6 +8,11 @@ import { validateJwtConfiguration } from './services/auth.service.js';
 // Export the Express app so Vercel can invoke it as a serverless function.
 export default app;
 
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = app;
+  (module.exports as any).default = app;
+}
+
 const PORT = process.env.PORT || 5000;
 
 async function bootstrap() {
