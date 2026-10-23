@@ -115,10 +115,11 @@ export class VerificationController {
         },
       });
     } catch (error: any) {
+      console.error('Verification error:', error);
       res.status(500).json({
         success: false,
         status: 'INVALID',
-        message: 'Internal verification processing error',
+        message: error?.message || 'Internal verification processing error',
       });
     }
   }

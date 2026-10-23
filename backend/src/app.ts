@@ -114,10 +114,12 @@ app.use(csrfProtection);
 // Health Check - General Status
 app.get('/api/health', async (req: Request, res: Response) => {
   let dbStatus = 'connected';
+  let dbError = null;
   try {
     await prisma.$queryRaw`SELECT 1`;
-  } catch (err) {
+  } catch (err: any) {
     dbStatus = 'disconnected';
+    dbError = err?.message || String(err);
   }
 
   const isHealthy = dbStatus === 'connected';
@@ -125,6 +127,7 @@ app.get('/api/health', async (req: Request, res: Response) => {
     status: isHealthy ? 'healthy' : 'degraded',
     service: 'TerAuth National Certificate Verification Platform API',
     database: dbStatus,
+    error: dbError,
     timestamp: new Date().toISOString(),
     uptimeSeconds: Math.floor(process.uptime()),
     version: '1.0.0',
