@@ -41,8 +41,8 @@ async function bootstrap() {
   }
 }
 
-// Vercel imports the exported app and does not need a long-running listener.
-// Keep the listener for local development and Docker/VM deployments.
-if (process.env.NODE_ENV !== 'production') {
+// When deployed on Vercel serverless, Vercel invokes the exported app directly.
+// In all other environments (local dev, Docker container, standalone VM), run bootstrap listener.
+if (!process.env.VERCEL) {
   void bootstrap();
 }

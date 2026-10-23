@@ -4,7 +4,7 @@
   "description": "Secure National Digital Certificate Authentication & Verification Platform API",
   "main": "dist/server.js",
   "scripts": {
-    "build": "node node_modules/typescript/bin/tsc",
+    "build": "node node_modules/prisma/build/index.js generate && node node_modules/typescript/bin/tsc",
     "start": "node dist/server.js",
     "dev": "node node_modules/tsx/dist/cli.mjs watch src/server.ts",
     "prisma:generate": "node node_modules/prisma/build/index.js generate",

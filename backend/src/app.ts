@@ -24,7 +24,7 @@ app.use(
         scriptSrc: ["'self'", "'unsafe-inline'"],
         styleSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: ["'self'", 'data:', 'blob:'],
-        connectSrc: ["'self'", process.env.FRONTEND_URL || 'http://localhost:5173', 'http://localhost:5000', 'http://127.0.0.1:5173'],
+        connectSrc: ["'self'", process.env.FRONTEND_URL || 'http://localhost:5173', 'http://localhost:5000', 'http://127.0.0.1:5173', 'https://*.vercel.app'],
         fontSrc: ["'self'"],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
@@ -65,6 +65,11 @@ app.use(
       }
 
       if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // Allow any Vercel deployment domain (*.vercel.app)
+      if (/^https:\/\/[a-z0-9-]+(\.vercel\.app|\.now\.sh)$/i.test(origin)) {
         return callback(null, true);
       }
 
