@@ -4,7 +4,7 @@
   "outputDirectory": "frontend/dist",
   "functions": {
     "api/index.js": {
-      "includeFiles": "backend/**"
+      "includeFiles": "node_modules/.prisma/client/**"
     }
   },
   "rewrites": [
