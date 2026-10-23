@@ -5,6 +5,9 @@ import app from './app.js';
 import prisma from './prisma.js';
 import { validateJwtConfiguration } from './services/auth.service.js';
 
+// Export the Express app so Vercel can invoke it as a serverless function.
+export default app;
+
 const PORT = process.env.PORT || 5000;
 
 async function bootstrap() {
@@ -38,4 +41,8 @@ async function bootstrap() {
   }
 }
 
-bootstrap();
+// Vercel imports the exported app and does not need a long-running listener.
+// Keep the listener for local development and Docker/VM deployments.
+if (process.env.NODE_ENV !== 'production') {
+  void bootstrap();
+}
