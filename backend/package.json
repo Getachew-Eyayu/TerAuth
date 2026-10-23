@@ -4,18 +4,16 @@
   "description": "Secure National Digital Certificate Authentication & Verification Platform API",
   "main": "dist/server.js",
   "scripts": {
-    "build": "node node_modules/prisma/build/index.js generate && node node_modules/typescript/bin/tsc",
+    "build": "prisma generate && tsc",
     "start": "node dist/server.js",
-    "dev": "node node_modules/tsx/dist/cli.mjs watch src/server.ts",
-    "prisma:generate": "node node_modules/prisma/build/index.js generate",
-    "prisma:push": "node node_modules/prisma/build/index.js db push --accept-data-loss",
-    "prisma:migrate": "node node_modules/prisma/build/index.js migrate dev",
-    "prisma:migrate:deploy": "node node_modules/prisma/build/index.js migrate deploy",
-    "prisma:migrate:status": "node node_modules/prisma/build/index.js migrate status",
-    "prisma:seed": "node node_modules/tsx/dist/cli.mjs prisma/seed.ts",
-    "db:use-postgres": "copy /Y prisma\\schema.postgresql.prisma prisma\\schema.prisma && node node_modules/prisma/build/index.js generate",
-    "db:use-sqlite": "copy /Y prisma\\schema.sqlite.prisma prisma\\schema.prisma && node node_modules/prisma/build/index.js generate",
-    "test": "node node_modules/jest/bin/jest.js --detectOpenHandles --forceExit"
+    "dev": "tsx watch src/server.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push --accept-data-loss",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:migrate:status": "prisma migrate status",
+    "prisma:seed": "tsx prisma/seed.ts",
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

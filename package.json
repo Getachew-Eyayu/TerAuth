@@ -2,6 +2,10 @@
   "name": "terauth-platform",
   "version": "1.0.0",
   "description": "Secure National Digital Certificate Authentication & Verification Platform",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
   "scripts": {
     "dev:backend": "npm --prefix backend run dev",
     "dev:frontend": "npm --prefix frontend run dev",
