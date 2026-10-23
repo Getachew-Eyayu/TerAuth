@@ -1,8 +1,6 @@
-// TerAuth Prisma Schema
-// Note: Configured for SQLite by default for zero-configuration local execution and testing.
-// To switch to PostgreSQL, configure DATABASE_URL in .env and run: npm run db:use-postgres
+// TerAuth Prisma Schema - PostgreSQL
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -10,21 +8,54 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum InstitutionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  INSTITUTION_ADMIN
+  ORGANIZATION_ADMIN
+  PUBLIC_VERIFIER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum CertificateStatus {
+  ACTIVE
+  REVOKED
+}
+
+enum VerificationResult {
+  VALID
+  REVOKED
+  INVALID
+}
+
 model Institution {
-  id              String   @id @default(uuid())
-  institutionId   String   @unique
+  id              String            @id @default(uuid())
+  institutionId   String            @unique
   name            String
-  officialEmail   String   @unique
+  officialEmail   String            @unique
   contactNumber   String?
   address         String?
   type            String
-  status          String   @default("PENDING") // PENDING, APPROVED, REJECTED, SUSPENDED
+  status          InstitutionStatus @default(PENDING)
   rejectionReason String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 
   users           User[]
   certificates    Certificate[]
+
+  @@index([status])
+  @@index([name])
 }
 
 model User {
@@ -33,44 +64,56 @@ model User {
   username         String       @unique
   email            String       @unique
   passwordHash     String
-  role             String       @default("PUBLIC_VERIFIER") // SUPER_ADMIN, INSTITUTION_ADMIN, ORGANIZATION_ADMIN, PUBLIC_VERIFIER
-  status           String       @default("ACTIVE") // ACTIVE, INACTIVE
+  role             UserRole     @default(PUBLIC_VERIFIER)
+  status           UserStatus   @default(ACTIVE)
   institutionId    String?
   refreshTokenHash String?
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 
   institution      Institution? @relation(fields: [institutionId], references: [id], onDelete: SetNull)
+
+  @@index([role])
+  @@index([institutionId])
 }
 
 model Certificate {
-  id               String            @id @default(uuid())
-  certificateId    String            @unique
+  id               String             @id @default(uuid())
+  certificateId    String             @unique
   studentName      String
   degree           String
   department       String
   issueDate        DateTime
   qrCodeUrl        String
   institutionId    String
-  status           String            @default("ACTIVE") // ACTIVE, REVOKED
+  status           CertificateStatus  @default(ACTIVE)
   revocationReason String?
   revokedAt        DateTime?
   metadata         String?
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 
-  institution      Institution       @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  institution      Institution        @relation(fields: [institutionId], references: [id], onDelete: Cascade)
   verificationLogs VerificationLog[]
+
+  @@index([certificateId])
+  @@index([studentName])
+  @@index([status])
+  @@index([institutionId])
 }
 
 model VerificationLog {
-  id            String       @id @default(uuid())
+  id            String             @id @default(uuid())
   certificateId String?
   queriedId     String
-  result        String       // VALID, REVOKED, INVALID
+  result        VerificationResult
   ipAddress     String?
   userAgent     String?
-  timestamp     DateTime     @default(now())
+  timestamp     DateTime           @default(now())
 
-  certificate   Certificate? @relation(fields: [certificateId], references: [id], onDelete: SetNull)
+  certificate   Certificate?       @relation(fields: [certificateId], references: [id], onDelete: SetNull)
+
+  @@index([queriedId])
+  @@index([timestamp])
+  @@index([result])
 }
