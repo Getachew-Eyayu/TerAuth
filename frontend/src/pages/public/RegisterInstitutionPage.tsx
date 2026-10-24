@@ -60,7 +60,12 @@ export const RegisterInstitutionPage: React.FC = () => {
         setRegisteredData(res.data.data);
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please check inputs.');
+      if (err.response?.data?.errors && Array.isArray(err.response.data.errors)) {
+        const errorList = err.response.data.errors.map((e: any) => e.message).join('. ');
+        setError(errorList || err.response?.data?.message || 'Registration failed.');
+      } else {
+        setError(err.response?.data?.message || 'Registration failed. Please check your inputs.');
+      }
     } finally {
       setIsLoading(false);
     }

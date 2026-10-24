@@ -28,18 +28,19 @@ export const RegisterInstitutionSchema = z.object({
     .email('Valid official email address is required')
     .refine(
       (email) => {
+        if (process.env.ENFORCE_ACADEMIC_EMAIL !== 'true') return true;
         const domain = email.split('@')[1]?.toLowerCase();
         return domain && !DISALLOWED_PUBLIC_EMAIL_DOMAINS.includes(domain);
       },
       {
-        message: 'Official institution email must use an organizational/academic domain (consumer providers like Gmail or Yahoo are not permitted).',
+        message: 'Official institution email must use an organizational/academic domain (consumer providers like Gmail or Yahoo are not permitted in strict mode).',
       }
     ),
   contactNumber: z.string().min(7, 'Contact number is required').optional(),
   address: z.string().min(3, 'Physical address is required').optional(),
   institutionType: z.string().min(2, 'Institution type is required (e.g. University, Institute, College)'),
   adminFullName: z.string().min(3, 'Administrator full name is required'),
-  adminUsername: z.string().min(3, 'Admin username must be at least 3 characters').regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain alphanumeric characters and underscores'),
+  adminUsername: z.string().min(3, 'Admin username must be at least 3 characters').regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain alphanumeric characters, underscores, and hyphens'),
   adminEmail: z.string().email('Valid administrator email address is required'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
 });

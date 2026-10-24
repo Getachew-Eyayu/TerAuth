@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import { Institution, InstitutionStatus } from '../../types';
 import { StatusBadge } from '../../components/common/StatusBadge';
@@ -14,6 +15,7 @@ import {
   Phone,
   MapPin,
   Calendar,
+  PlusCircle,
 } from 'lucide-react';
 
 export const AdminInstitutionsPage: React.FC = () => {
@@ -98,13 +100,22 @@ export const AdminInstitutionsPage: React.FC = () => {
             Review institution registration applications and manage institutional authority to issue credentials.
           </p>
         </div>
-        <button
-          onClick={fetchInstitutions}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 shadow-sm"
-        >
-          <RefreshCw className="w-3.5 h-3.5" />
-          <span>Refresh</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/register-institution"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors"
+          >
+            <PlusCircle className="w-3.5 h-3.5" />
+            <span>Register New Institution</span>
+          </Link>
+          <button
+            onClick={fetchInstitutions}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 shadow-sm"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Refresh</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter and Search Bar */}
