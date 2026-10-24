@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import { Sidebar } from '../components/common/Sidebar';
+import { DashboardHeader } from '../components/common/DashboardHeader';
 import { useAuth } from '../context/AuthContext';
 import { RefreshCw } from 'lucide-react';
 
@@ -28,6 +29,7 @@ export const InstitutionLayout: React.FC = () => {
     <div className="min-h-screen flex bg-slate-50">
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        <DashboardHeader />
         <main className="flex-1 p-6 sm:p-8 max-w-7xl w-full mx-auto">
           <Outlet />
         </main>

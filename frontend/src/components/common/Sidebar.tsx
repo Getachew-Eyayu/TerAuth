@@ -99,20 +99,24 @@ export const Sidebar: React.FC = () => {
       </nav>
 
       {/* User info & Logout */}
-      <div className="p-4 border-t border-slate-800 bg-slate-950/40">
-        <div className="flex items-center justify-between">
-          <div className="truncate mr-2">
-            <p className="text-xs font-semibold text-slate-200 truncate">{user?.username}</p>
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider">{user?.role?.replace('_', ' ')}</p>
+      <div className="p-4 border-t border-slate-800 bg-slate-950/40 space-y-3">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-white uppercase">
+            {user?.username?.charAt(0) || 'U'}
           </div>
-          <button
-            onClick={handleLogout}
-            title="Log Out"
-            className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition-colors"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
+          <div className="truncate flex-1">
+            <p className="text-xs font-semibold text-slate-200 truncate">{user?.username}</p>
+            <p className="text-[10px] text-slate-400 uppercase tracking-wider">{user?.role?.replace('_', ' ')}</p>
+          </div>
         </div>
+        <button
+          onClick={handleLogout}
+          title="Sign out of administrative session"
+          className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold text-rose-300 hover:text-white bg-rose-950/40 hover:bg-rose-600/90 rounded-lg border border-rose-900/50 transition-colors shadow-xs"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          <span>Sign Out</span>
+        </button>
       </div>
     </aside>
   );
