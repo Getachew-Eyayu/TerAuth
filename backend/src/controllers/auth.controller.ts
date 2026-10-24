@@ -164,6 +164,22 @@ export class AuthController {
         return;
       }
 
+      if (user.status !== 'ACTIVE') {
+        res.status(403).json({
+          success: false,
+          message: 'Account is deactivated. Please contact support.',
+        });
+        return;
+      }
+
+      if (user.role === 'INSTITUTION_ADMIN' && user.institution?.status !== 'APPROVED') {
+        res.status(403).json({
+          success: false,
+          message: 'Institution access is suspended or pending approval.',
+        });
+        return;
+      }
+
       const isValidToken = await AuthService.comparePassword(refreshToken, user.refreshTokenHash);
       if (!isValidToken) {
         res.status(401).json({
@@ -319,7 +335,17 @@ export class AuthController {
       const newPasswordHash = await AuthService.hashPassword(newPassword);
       await prisma.user.update({
         where: { id: user.id },
-        data: { passwordHash: newPasswordHash },
+        data: {
+          passwordHash: newPasswordHash,
+          refreshTokenHash: null,
+        },
+      });
+
+      res.clearCookie('terauth_refresh_token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/api/auth',
       });
 
       await AuditService.logAdminAction({

@@ -21,10 +21,11 @@ export class UserController {
       }
 
       if (search) {
+        const query = (search as string).trim();
         where.OR = [
-          { username: { contains: (search as string).trim() } },
-          { email: { contains: (search as string).trim() } },
-          { userId: { contains: (search as string).trim() } },
+          { username: { contains: query, mode: 'insensitive' } },
+          { email: { contains: query, mode: 'insensitive' } },
+          { userId: { contains: query, mode: 'insensitive' } },
         ];
       }
 
@@ -88,7 +89,10 @@ export class UserController {
 
       const user = await prisma.user.update({
         where: { id },
-        data: { status },
+        data: {
+          status,
+          ...(status === 'INACTIVE' ? { refreshTokenHash: null } : {}),
+        },
         select: {
           id: true,
           userId: true,
