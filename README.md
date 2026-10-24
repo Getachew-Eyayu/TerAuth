@@ -108,3 +108,11 @@ npm run dev              # Starts client on http://localhost:5173
 
 ## 📜 Academic Project Notice
 TerAuth is engineered as an academic software engineering capstone demonstrating secure credential management, anti-tamper QR verification, and real-time database validation.
+
+## Developers ( Group Members)
+ 1. Getachew Eyayu Adugna
+    ID : CTC-3600-26
+    Role: Co - developer ( both backend and frontend)
+2. Hawlet Romedan Yesuf
+   ID: CTC--26
+   Role: Co - developer ( both backend and frontend)
