@@ -126,5 +126,5 @@ Developed as a national digital credentials infrastructure capstone demonstratin
    - ID: CTC-3600-26
    - Role: Co-developer (Full Stack: Backend & Frontend)
 2. **Hawlet Romedan Yesuf**
-   - ID: CTC--26
+   - ID: CTC-3877-26
    - Role: Co-developer (Full Stack: Backend & Frontend)
