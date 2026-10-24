@@ -11,7 +11,6 @@
     "dev:frontend": "npm --prefix frontend run dev",
     "seed:backend": "npm --prefix backend run prisma:seed",
     "test:backend": "npm --prefix backend test",
-    "postinstall": "prisma generate --schema=backend/prisma/schema.prisma",
     "build": "npx prisma generate --schema=backend/prisma/schema.prisma && npm --prefix backend run build && npm --prefix frontend run build"
   },
   "dependencies": {
