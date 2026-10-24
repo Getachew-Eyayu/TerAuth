@@ -18,7 +18,7 @@ TerAuth exposes a modular REST API built with Node.js, Express, and TypeScript. 
   ```json
   {
     "username": "superadmin",
-    "password": "Admin@12345"
+    "password": "<YOUR_ADMIN_PASSWORD>"
   }
   ```
 - **Response (200 OK)**:
@@ -38,6 +38,24 @@ TerAuth exposes a modular REST API built with Node.js, Express, and TypeScript. 
         "institution": null
       }
     }
+  }
+  ```
+
+### Change Password
+- **Endpoint**: `POST /api/auth/change-password`
+- **Headers**: `Authorization: Bearer <accessToken>`
+- **Request Body**:
+  ```json
+  {
+    "currentPassword": "<CURRENT_PASSWORD>",
+    "newPassword": "<NEW_SECURE_PASSWORD>"
+  }
+  ```
+- **Response (200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Password successfully changed."
   }
   ```
 
@@ -151,10 +169,24 @@ TerAuth exposes a modular REST API built with Node.js, Express, and TypeScript. 
     "adminFullName": "Dr. Girma Bekele",
     "adminUsername": "hit_admin",
     "adminEmail": "girma@hit.edu.et",
-    "password": "Password@123"
+    "password": "<STRONG_ADMIN_PASSWORD>"
   }
   ```
 - **Response (201 Created)**: Status is set to `PENDING`. Institution cannot issue credentials until Super Admin approval.
+
+### Update Institution Information
+- **Endpoint**: `PATCH /api/institutions/:id`
+- **Role**: `SUPER_ADMIN` or assigned `INSTITUTION_ADMIN`
+- **Request Body**:
+  ```json
+  {
+    "name": "Hawassa Institute of Technology",
+    "officialEmail": "registrar@hit.edu.et",
+    "contactNumber": "+251 46 220 5311",
+    "address": "Campus Ground, Hawassa, Ethiopia"
+  }
+  ```
+- **Response (200 OK)**: Returns updated institution record.
 
 ### List Institutions (Super Admin)
 - **Endpoint**: `GET /api/institutions?status=PENDING&search=Hawassa`
