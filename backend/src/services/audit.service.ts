@@ -52,6 +52,22 @@ export class AuditService {
         ipAddress: params.ipAddress || 'internal',
         timestamp: new Date().toISOString(),
       });
+
+      await (prisma as any).adminAuditLog.create({
+        data: {
+          adminId: params.actorId || null,
+          action: params.action,
+          targetType: params.targetType,
+          targetId: params.targetId,
+          details: {
+            actorUsername: params.actorUsername || 'unknown',
+            reason: params.reason || null,
+          },
+          ipAddress: params.ipAddress || null,
+        },
+      }).catch((dbErr: any) => {
+        console.error('Failed to persist admin audit log to database:', dbErr);
+      });
     } catch (err) {
       console.error('Failed to log admin action:', err);
     }
