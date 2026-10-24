@@ -191,7 +191,9 @@ export const PrintableCertificate: React.FC<PrintableCertificateProps> = ({
                   className="w-20 h-20 object-contain"
                 />
               </div>
-              <p className="text-[9px] text-slate-500 font-medium">Scan to Verify Record</p>
+              <p className="text-[9px] text-slate-600 font-medium text-center">
+                Verify at <span className="font-bold text-blue-700">terauth.vercel.app</span> or scan QR code
+              </p>
             </div>
           </div>
         </div>
