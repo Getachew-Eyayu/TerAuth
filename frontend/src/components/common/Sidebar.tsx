@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -11,15 +11,19 @@ import {
   LogOut,
   ExternalLink,
   Shield,
+  Menu,
+  X,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export const Sidebar: React.FC = () => {
   const { user, logout } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
+    setMobileMenuOpen(false);
     navigate('/');
   };
 
@@ -44,11 +48,11 @@ export const Sidebar: React.FC = () => {
   const links = isSuperAdmin ? superAdminLinks : institutionLinks;
 
   return (
-    <aside className="w-64 bg-slate-900 text-slate-300 min-h-screen flex flex-col border-r border-slate-800">
-      {/* Brand / Role header */}
-      <div className="p-5 border-b border-slate-800">
+    <aside className="w-full md:w-64 bg-slate-900 text-slate-300 md:min-h-screen flex flex-col border-b md:border-b-0 md:border-r border-slate-800 flex-shrink-0">
+      {/* Brand / Role header with mobile toggle */}
+      <div className="p-4 md:p-5 border-b border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-sm">
+          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-sm flex-shrink-0">
             <Shield className="w-4 h-4" />
           </div>
           <div>
@@ -60,10 +64,19 @@ export const Sidebar: React.FC = () => {
             </p>
           </div>
         </div>
+
+        {/* Mobile toggle button */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle navigation menu"
+          className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+        >
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
       </div>
 
-      {/* Navigation menu */}
-      <nav className="flex-1 p-3 space-y-1">
+      {/* Navigation menu (collapsible on mobile, always visible on desktop) */}
+      <nav className={`${mobileMenuOpen ? 'block' : 'hidden'} md:block flex-1 p-3 space-y-1`}>
         {links.map((item) => {
           const Icon = item.icon;
           return (
@@ -71,6 +84,7 @@ export const Sidebar: React.FC = () => {
               key={item.to}
               to={item.to}
               end={item.to.endsWith('dashboard')}
+              onClick={() => setMobileMenuOpen(false)}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all ${
                   isActive
@@ -99,9 +113,9 @@ export const Sidebar: React.FC = () => {
       </nav>
 
       {/* User info & Logout */}
-      <div className="p-4 border-t border-slate-800 bg-slate-950/40 space-y-3">
+      <div className={`${mobileMenuOpen ? 'block' : 'hidden'} md:block p-4 border-t border-slate-800 bg-slate-950/40 space-y-3`}>
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-white uppercase">
+          <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-white uppercase flex-shrink-0">
             {user?.username?.charAt(0) || 'U'}
           </div>
           <div className="truncate flex-1">

@@ -125,10 +125,10 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({ isOpen, onClose,
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-200 max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50 flex-shrink-0">
           <div className="flex items-center gap-2">
             <Camera className="w-5 h-5 text-blue-600" />
             <h3 className="font-bold text-slate-800 text-sm">Scan Certificate QR Code</h3>
@@ -142,7 +142,7 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({ isOpen, onClose,
         </div>
 
         {/* Tab switchers */}
-        <div className="flex border-b border-slate-100 bg-slate-50/50 p-1.5 gap-1.5">
+        <div className="flex border-b border-slate-100 bg-slate-50/50 p-1.5 gap-1.5 flex-shrink-0">
           <button
             onClick={() => setScanMode('camera')}
             className={`flex-1 py-1.5 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all ${
@@ -171,9 +171,9 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({ isOpen, onClose,
         </div>
 
         {/* Viewport */}
-        <div className="p-5">
+        <div className="p-4 sm:p-5 overflow-y-auto">
           {scanMode === 'camera' ? (
-            <div className="relative rounded-xl overflow-hidden bg-slate-950 aspect-square flex flex-col items-center justify-center text-white">
+            <div className="relative rounded-xl overflow-hidden bg-slate-950 aspect-square max-h-[300px] sm:max-h-[340px] mx-auto flex flex-col items-center justify-center text-white">
               <div id={containerId} className="w-full h-full" />
               {isInitializing && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/80 text-white gap-2">
