@@ -95,12 +95,14 @@ export class CertificateController {
       if (search) {
         const query = (search as string).trim();
         where.OR = [
-          { certificateId: { contains: query } },
-          { studentName: { contains: query } },
-          { degree: { contains: query } },
-          { department: { contains: query } },
+          { certificateId: { contains: query, mode: 'insensitive' } },
+          { studentName: { contains: query, mode: 'insensitive' } },
+          { degree: { contains: query, mode: 'insensitive' } },
+          { department: { contains: query, mode: 'insensitive' } },
         ];
       }
+
+      const includeQr = req.query.includeQr === 'true';
 
       const [certificates, total] = await Promise.all([
         prisma.certificate.findMany({
@@ -108,7 +110,21 @@ export class CertificateController {
           skip,
           take: limitNumber,
           orderBy: { createdAt: 'desc' },
-          include: {
+          select: {
+            id: true,
+            certificateId: true,
+            studentName: true,
+            degree: true,
+            department: true,
+            issueDate: true,
+            institutionId: true,
+            status: true,
+            revocationReason: true,
+            revokedAt: true,
+            metadata: true,
+            createdAt: true,
+            updatedAt: true,
+            ...(includeQr ? { qrCodeUrl: true } : {}),
             institution: {
               select: {
                 id: true,

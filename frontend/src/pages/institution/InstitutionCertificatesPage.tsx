@@ -64,9 +64,20 @@ export const InstitutionCertificatesPage: React.FC = () => {
     }
   };
 
-  const handleDownloadQR = (cert: Certificate) => {
+  const handleDownloadQR = async (cert: Certificate) => {
+    let qrUrl = cert.qrCodeUrl;
+    if (!qrUrl) {
+      try {
+        const res = await api.get(`/certificates/${cert.id || cert.certificateId}`);
+        qrUrl = res.data?.data?.qrCodeUrl;
+      } catch (e) {
+        console.error('Failed to retrieve certificate QR code', e);
+      }
+    }
+    if (!qrUrl) return;
+
     const link = document.createElement('a');
-    link.href = cert.qrCodeUrl;
+    link.href = qrUrl;
     link.download = `QR_${cert.certificateId}.png`;
     document.body.appendChild(link);
     link.click();

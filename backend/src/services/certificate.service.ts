@@ -160,6 +160,7 @@ export class CertificateService {
     }
 
     return {
+      id: cert.id,
       certificateId: cert.certificateId,
       studentName: cert.studentName,
       degree: cert.degree,

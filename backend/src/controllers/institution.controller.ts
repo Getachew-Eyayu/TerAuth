@@ -132,10 +132,11 @@ export class InstitutionController {
       }
 
       if (search) {
+        const query = (search as string).trim();
         where.OR = [
-          { name: { contains: (search as string).trim() } },
-          { institutionId: { contains: (search as string).trim() } },
-          { officialEmail: { contains: (search as string).trim() } },
+          { name: { contains: query, mode: 'insensitive' } },
+          { institutionId: { contains: query, mode: 'insensitive' } },
+          { officialEmail: { contains: query, mode: 'insensitive' } },
         ];
       }
 

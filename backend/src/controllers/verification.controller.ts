@@ -50,13 +50,8 @@ export class VerificationController {
 
       // Check Revocation Status
       if (certificate.status === 'REVOKED') {
-        const certRecord = await prisma.certificate.findUnique({
-          where: { certificateId: cleanId },
-          select: { id: true },
-        });
-
         await AuditService.logVerification({
-          certificateId: certRecord?.id,
+          certificateId: certificate.id,
           queriedId: cleanId,
           result: 'REVOKED',
           ipAddress,
@@ -85,13 +80,8 @@ export class VerificationController {
       }
 
       // Certificate is VALID and ACTIVE
-      const certRecord = await prisma.certificate.findUnique({
-        where: { certificateId: cleanId },
-        select: { id: true },
-      });
-
       await AuditService.logVerification({
-        certificateId: certRecord?.id,
+        certificateId: certificate.id,
         queriedId: cleanId,
         result: 'VALID',
         ipAddress,
