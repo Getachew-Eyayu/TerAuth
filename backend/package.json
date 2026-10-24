@@ -25,6 +25,7 @@
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "nanoid": "^3.3.7",
+    "prisma": "^5.22.0",
     "qrcode": "^1.5.4",
     "zod": "^3.23.8"
   },
@@ -38,7 +39,6 @@
     "@types/qrcode": "^1.5.5",
     "@types/supertest": "^6.0.2",
     "jest": "^29.7.0",
-    "prisma": "^5.22.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "tsx": "^4.19.2",
