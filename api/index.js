@@ -33,7 +33,7 @@ module.exports = (req, res) => {
           success: false,
           error: 'LAMBDA_INITIALIZATION_ERROR',
           message: error?.message,
-          stack: error?.stack,
+          ...(process.env.NODE_ENV !== 'production' ? { stack: error?.stack } : {}),
         },
         null,
         2

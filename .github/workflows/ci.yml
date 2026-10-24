@@ -14,6 +14,21 @@ jobs:
   backend-test:
     name: Backend Tests & Type Check
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgrespassword
+          POSTGRES_DB: terauth_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -25,7 +40,7 @@ jobs:
 
       - name: Install Backend Dependencies
         working-directory: backend
-        run: npm install
+        run: npm ci
 
       - name: Generate Prisma Client
         working-directory: backend
@@ -35,13 +50,24 @@ jobs:
         working-directory: backend
         run: npm run build
 
+      - name: Synchronize Database Schema
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgrespassword@localhost:5432/terauth_test?schema=public
+        run: npx prisma db push --skip-generate
+
+      - name: Seed Database for Test Suite
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgrespassword@localhost:5432/terauth_test?schema=public
+        run: npm run prisma:seed
+
       - name: Run Backend Integration Tests
         working-directory: backend
-        if: ${{ secrets.DATABASE_URL != '' }}
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET || 'terauth_test_ci_access_secret_key_minimum_32_characters' }}
-          JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET || 'terauth_test_ci_refresh_secret_key_minimum_32_characters' }}
+          DATABASE_URL: postgresql://postgres:postgrespassword@localhost:5432/terauth_test?schema=public
+          JWT_ACCESS_SECRET: terauth_test_ci_access_secret_key_minimum_32_characters
+          JWT_REFRESH_SECRET: terauth_test_ci_refresh_secret_key_minimum_32_characters
           NODE_ENV: test
         run: npm test
 
