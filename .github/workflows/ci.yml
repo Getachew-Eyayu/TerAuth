@@ -37,10 +37,11 @@ jobs:
 
       - name: Run Backend Integration Tests
         working-directory: backend
+        if: ${{ secrets.DATABASE_URL != '' }}
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://neondb_owner:npg_2xgOcCRjos4B@ep-round-mouse-b5hzan6h-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require' }}
-          JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET || 'terauth_super_secure_access_secret_key_minimum_32_characters' }}
-          JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET || 'terauth_super_secure_refresh_secret_key_minimum_32_characters' }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET || 'terauth_test_ci_access_secret_key_minimum_32_characters' }}
+          JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET || 'terauth_test_ci_refresh_secret_key_minimum_32_characters' }}
           NODE_ENV: test
         run: npm test
 
