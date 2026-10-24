@@ -4,14 +4,17 @@ node_modules/
 
 # Production build outputs
 frontend/dist/
+backend/dist/
 build/
 */build/
+dist/
 
 # Environment and sensitive keys
 .env
 .env.local
 .env.*.local
 *.env
+.env.docker
 
 # SQLite & Backup Databases
 *.db
