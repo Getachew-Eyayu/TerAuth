@@ -11,12 +11,12 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_secure_dev_password}
       POSTGRES_DB: ${POSTGRES_DB:-terauth}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "${POSTGRES_PORT:-5433}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-terauth}"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
       retries: 5
     networks:
@@ -38,14 +38,20 @@ services:
       NODE_ENV: production
       PORT: 5000
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres_secure_dev_password}@postgres:5432/${POSTGRES_DB:-terauth}?schema=public
-      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-terauth_prod_jwt_access_secret_sample_key_2026_xyz}
-      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-terauth_prod_jwt_refresh_secret_sample_key_2026_xyz}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-0631ece8458769567df62a66e3ffdc91481800c150a904ae6bd8efff5ed3f44d}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-0938c8726cbb4fa34aa8f831c2ac4fe60c2c5837a3dad239d716f97afab8bf39}
       JWT_ACCESS_EXPIRES_IN: 15m
       JWT_REFRESH_EXPIRES_IN: 7d
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:80,http://localhost:3000}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:80,http://localhost:3000,http://127.0.0.1:5173}
     ports:
       - "5000:5000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/api/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
     networks:
       - terauth-net
 
@@ -59,9 +65,16 @@ services:
     container_name: terauth-frontend
     restart: unless-stopped
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     ports:
       - "5173:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     networks:
       - terauth-net
 
