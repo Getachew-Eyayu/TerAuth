@@ -10,8 +10,11 @@ class QRService {
      * Generates standard verification URL pointing to TerAuth verification endpoint
      */
     static getVerificationUrl(certificateId) {
-        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-        return `${frontendUrl}/verify/${encodeURIComponent(certificateId)}`;
+        const rawUrl = process.env.FRONTEND_URL ||
+            (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
+            'https://terauth.vercel.app';
+        const cleanUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`;
+        return `${cleanUrl.replace(/\/$/, '')}/verify/${encodeURIComponent(certificateId)}`;
     }
     /**
      * Generates a high-quality QR code data URL (PNG) containing strictly the verification URL.

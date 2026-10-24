@@ -13,8 +13,12 @@ async function hashPassword(password: string): Promise<string> {
 }
 
 async function generateQR(certificateId: string): Promise<string> {
-  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-  const url = `${frontendUrl}/verify/${certificateId}`;
+  const rawUrl =
+    process.env.FRONTEND_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
+    'https://terauth.vercel.app';
+  const cleanUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`;
+  const url = `${cleanUrl.replace(/\/$/, '')}/verify/${certificateId}`;
   return QRCode.toDataURL(url, {
     errorCorrectionLevel: 'H',
     type: 'image/png',
