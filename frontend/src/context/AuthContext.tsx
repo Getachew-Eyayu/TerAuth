@@ -9,6 +9,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (token: string, refreshToken: string, userData: User) => void;
   logout: () => void;
+  refreshUser: () => Promise<void>;
   hasRole: (roles: UserRole[]) => boolean;
 }
 
@@ -19,6 +20,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setToken] = useState<string | null>(localStorage.getItem('terauth_token'));
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const refreshUser = async () => {
+    try {
+      const res = await api.get('/auth/me');
+      if (res.data.success && res.data.data) {
+        setUser(res.data.data);
+        localStorage.setItem('terauth_user', JSON.stringify(res.data.data));
+      }
+    } catch (error) {
+      console.warn('Failed to refresh user data', error);
+    }
+  };
+
   useEffect(() => {
     const initializeAuth = async () => {
       const storedToken = localStorage.getItem('terauth_token');
@@ -28,11 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
           setUser(JSON.parse(storedUser));
           // Verify with backend
-          const res = await api.get('/auth/me');
-          if (res.data.success && res.data.data) {
-            setUser(res.data.data);
-            localStorage.setItem('terauth_user', JSON.stringify(res.data.data));
-          }
+          await refreshUser();
         } catch (error) {
           console.warn('Session verification failed, logging out');
           logout();
@@ -77,6 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLoading,
         login,
         logout,
+        refreshUser,
         hasRole,
       }}
     >

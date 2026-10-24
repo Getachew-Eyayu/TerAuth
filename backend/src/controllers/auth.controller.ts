@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../prisma.js';
 import { AuthService } from '../services/auth.service.js';
+import { AuditService } from '../services/audit.service.js';
 import { AuthenticatedRequest, UserRole } from '../types/index.js';
 
 export class AuthController {
@@ -282,6 +283,62 @@ export class AuthController {
       res.status(500).json({
         success: false,
         message: error.message || 'Failed to fetch current user profile',
+      });
+    }
+  }
+
+  /**
+   * Change authenticated user's password
+   */
+  static async changePassword(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      if (!req.user?.id) {
+        res.status(401).json({ success: false, message: 'Unauthorized' });
+        return;
+      }
+
+      const { currentPassword, newPassword } = req.body;
+      const user = await prisma.user.findUnique({
+        where: { id: req.user.id },
+      });
+
+      if (!user) {
+        res.status(404).json({ success: false, message: 'User not found' });
+        return;
+      }
+
+      const isCurrentMatch = await AuthService.comparePassword(currentPassword, user.passwordHash);
+      if (!isCurrentMatch) {
+        res.status(400).json({
+          success: false,
+          message: 'Current password is incorrect.',
+        });
+        return;
+      }
+
+      const newPasswordHash = await AuthService.hashPassword(newPassword);
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { passwordHash: newPasswordHash },
+      });
+
+      await AuditService.logAdminAction({
+        actorId: user.id,
+        actorUsername: user.username,
+        action: 'PASSWORD_CHANGED',
+        targetType: 'USER',
+        targetId: user.userId,
+        ipAddress: req.ip,
+      });
+
+      res.status(200).json({
+        success: true,
+        message: 'Password successfully changed.',
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to change password.',
       });
     }
   }

@@ -370,4 +370,64 @@ export class InstitutionController {
       });
     }
   }
+
+  /**
+   * Update institution information
+   * Accessible by SUPER_ADMIN or assigned INSTITUTION_ADMIN
+   */
+  static async update(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { name, officialEmail, contactNumber, address, type } = req.body;
+
+      const institution = await prisma.institution.findFirst({
+        where: { OR: [{ id }, { institutionId: id }] },
+      });
+
+      if (!institution) {
+        res.status(404).json({ success: false, message: 'Institution not found' });
+        return;
+      }
+
+      // Scoping: INSTITUTION_ADMIN can only edit their own institution
+      if (req.user?.role === 'INSTITUTION_ADMIN' && req.user.institutionId !== institution.id) {
+        res.status(403).json({
+          success: false,
+          message: 'Access restricted: You may only edit information for your assigned institution.',
+        });
+        return;
+      }
+
+      const updated = await prisma.institution.update({
+        where: { id: institution.id },
+        data: {
+          ...(name && { name: name.trim() }),
+          ...(officialEmail && { officialEmail: officialEmail.toLowerCase().trim() }),
+          ...(contactNumber !== undefined && { contactNumber: contactNumber?.trim() || null }),
+          ...(address !== undefined && { address: address?.trim() || null }),
+          ...(type && { type: type.trim() }),
+        },
+      });
+
+      await AuditService.logAdminAction({
+        actorId: req.user?.id,
+        actorUsername: req.user?.username,
+        action: 'INSTITUTION_UPDATED',
+        targetType: 'INSTITUTION',
+        targetId: institution.institutionId,
+        ipAddress: req.ip,
+      });
+
+      res.status(200).json({
+        success: true,
+        message: 'Institution information updated successfully.',
+        data: updated,
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to update institution information.',
+      });
+    }
+  }
 }

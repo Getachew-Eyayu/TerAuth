@@ -11,4 +11,5 @@ router.post('/login', rateLimit_middleware_js_1.authRateLimiter, (0, validate_mi
 router.post('/refresh', (0, validate_middleware_js_1.validateRequest)(schemas_js_1.RefreshTokenSchema), auth_controller_js_1.AuthController.refreshToken);
 router.post('/logout', auth_middleware_js_1.authenticateToken, auth_controller_js_1.AuthController.logout);
 router.get('/me', auth_middleware_js_1.authenticateToken, auth_controller_js_1.AuthController.getCurrentUser);
+router.post('/change-password', auth_middleware_js_1.authenticateToken, (0, validate_middleware_js_1.validateRequest)(schemas_js_1.ChangePasswordSchema), auth_controller_js_1.AuthController.changePassword);
 exports.default = router;

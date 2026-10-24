@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VerifyQuerySchema = exports.RevokeCertificateSchema = exports.CreateCertificateSchema = exports.ReviewInstitutionSchema = exports.RegisterInstitutionSchema = exports.RefreshTokenSchema = exports.LoginSchema = void 0;
+exports.UpdateInstitutionSchema = exports.ChangePasswordSchema = exports.VerifyQuerySchema = exports.RevokeCertificateSchema = exports.CreateCertificateSchema = exports.ReviewInstitutionSchema = exports.RegisterInstitutionSchema = exports.RefreshTokenSchema = exports.LoginSchema = void 0;
 const zod_1 = require("zod");
 exports.LoginSchema = zod_1.z.object({
     username: zod_1.z.string().min(3, 'Username must be at least 3 characters'),
@@ -62,4 +62,15 @@ exports.RevokeCertificateSchema = zod_1.z.object({
 });
 exports.VerifyQuerySchema = zod_1.z.object({
     certificateId: zod_1.z.string().min(4, 'Certificate ID must be at least 4 characters').trim(),
+});
+exports.ChangePasswordSchema = zod_1.z.object({
+    currentPassword: zod_1.z.string().min(1, 'Current password is required'),
+    newPassword: zod_1.z.string().min(8, 'New password must be at least 8 characters'),
+});
+exports.UpdateInstitutionSchema = zod_1.z.object({
+    name: zod_1.z.string().min(3, 'Institution name must be at least 3 characters').optional(),
+    officialEmail: zod_1.z.string().email('Valid official email address is required').optional(),
+    contactNumber: zod_1.z.string().min(7, 'Contact number is required').optional().nullable(),
+    address: zod_1.z.string().min(3, 'Physical address is required').optional().nullable(),
+    type: zod_1.z.string().min(2, 'Institution type is required').optional(),
 });

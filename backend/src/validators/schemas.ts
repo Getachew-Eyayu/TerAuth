@@ -73,3 +73,16 @@ export const RevokeCertificateSchema = z.object({
 export const VerifyQuerySchema = z.object({
   certificateId: z.string().min(4, 'Certificate ID must be at least 4 characters').trim(),
 });
+
+export const ChangePasswordSchema = z.object({
+  currentPassword: z.string().min(1, 'Current password is required'),
+  newPassword: z.string().min(8, 'New password must be at least 8 characters'),
+});
+
+export const UpdateInstitutionSchema = z.object({
+  name: z.string().min(3, 'Institution name must be at least 3 characters').optional(),
+  officialEmail: z.string().email('Valid official email address is required').optional(),
+  contactNumber: z.string().min(7, 'Contact number is required').optional().nullable(),
+  address: z.string().min(3, 'Physical address is required').optional().nullable(),
+  type: z.string().min(2, 'Institution type is required').optional(),
+});

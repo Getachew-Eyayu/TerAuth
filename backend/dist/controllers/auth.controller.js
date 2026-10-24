@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const prisma_js_1 = __importDefault(require("../prisma.js"));
 const auth_service_js_1 = require("../services/auth.service.js");
+const audit_service_js_1 = require("../services/audit.service.js");
 class AuthController {
     /**
      * User login (Super Admin, Institution Admin, Organization Admin)
@@ -260,6 +261,56 @@ class AuthController {
             res.status(500).json({
                 success: false,
                 message: error.message || 'Failed to fetch current user profile',
+            });
+        }
+    }
+    /**
+     * Change authenticated user's password
+     */
+    static async changePassword(req, res) {
+        try {
+            if (!req.user?.id) {
+                res.status(401).json({ success: false, message: 'Unauthorized' });
+                return;
+            }
+            const { currentPassword, newPassword } = req.body;
+            const user = await prisma_js_1.default.user.findUnique({
+                where: { id: req.user.id },
+            });
+            if (!user) {
+                res.status(404).json({ success: false, message: 'User not found' });
+                return;
+            }
+            const isCurrentMatch = await auth_service_js_1.AuthService.comparePassword(currentPassword, user.passwordHash);
+            if (!isCurrentMatch) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Current password is incorrect.',
+                });
+                return;
+            }
+            const newPasswordHash = await auth_service_js_1.AuthService.hashPassword(newPassword);
+            await prisma_js_1.default.user.update({
+                where: { id: user.id },
+                data: { passwordHash: newPasswordHash },
+            });
+            await audit_service_js_1.AuditService.logAdminAction({
+                actorId: user.id,
+                actorUsername: user.username,
+                action: 'PASSWORD_CHANGED',
+                targetType: 'USER',
+                targetId: user.userId,
+                ipAddress: req.ip,
+            });
+            res.status(200).json({
+                success: true,
+                message: 'Password successfully changed.',
+            });
+        }
+        catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message || 'Failed to change password.',
             });
         }
     }
