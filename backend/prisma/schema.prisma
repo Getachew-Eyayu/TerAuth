@@ -6,7 +6,7 @@ datasource db {
 
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-3.0.x", "debian-openssl-3.0.x"]
+  binaryTargets = ["native", "rhel-openssl-3.0.x", "debian-openssl-3.0.x", "linux-musl-openssl-3.0.x"]
 }
 
 enum InstitutionStatus {
@@ -73,6 +73,7 @@ model User {
   updatedAt        DateTime     @updatedAt
 
   institution      Institution? @relation(fields: [institutionId], references: [id], onDelete: SetNull)
+  adminLogs        AdminAuditLog[] @relation("AdminLogs")
 
   @@index([role])
   @@index([institutionId])
@@ -94,7 +95,7 @@ model Certificate {
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
 
-  institution      Institution        @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  institution      Institution        @relation(fields: [institutionId], references: [id], onDelete: Restrict)
   verificationLogs VerificationLog[]
 
   @@index([certificateId])
@@ -118,3 +119,21 @@ model VerificationLog {
   @@index([timestamp])
   @@index([result])
 }
+
+model AdminAuditLog {
+  id         String   @id @default(uuid())
+  adminId    String?
+  action     String
+  targetType String
+  targetId   String?
+  details    Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  admin      User?    @relation("AdminLogs", fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@index([adminId])
+  @@index([action])
+  @@index([createdAt])
+}
+
