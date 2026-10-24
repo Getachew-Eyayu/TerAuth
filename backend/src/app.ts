@@ -14,6 +14,9 @@ import prisma from './prisma.js';
 
 const app: Express = express();
 
+// Trust reverse proxy headers (e.g. Nginx, Vercel, AWS ALB) for accurate client IP resolution
+app.set('trust proxy', 1);
+
 // Security Headers
 app.use(
   helmet({
