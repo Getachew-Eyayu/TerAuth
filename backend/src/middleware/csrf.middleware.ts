@@ -39,14 +39,33 @@ export const csrfProtection = (req: Request, res: Response, next: NextFunction):
     return next();
   }
 
-  // For state-changing requests, if an XSRF-TOKEN cookie is set, verify header matches
+  // For state-changing requests, enforce double-submit verification
   const cookieToken = (req as any).cookies?.['XSRF-TOKEN'];
-  const headerToken = req.headers['x-csrf-token'];
+  const rawHeader = req.headers['x-csrf-token'] || req.headers['X-CSRF-Token'];
+  const headerToken = Array.isArray(rawHeader) ? rawHeader[0] : (rawHeader as string | undefined);
 
-  if (cookieToken && (!headerToken || headerToken !== cookieToken)) {
+  if (cookieToken) {
+    if (!headerToken) {
+      res.status(403).json({
+        success: false,
+        message: 'CSRF token missing: X-CSRF-Token header is required for state-changing requests.',
+      });
+      return;
+    }
+
+    const cookieBuf = Buffer.from(cookieToken);
+    const headerBuf = Buffer.from(headerToken);
+    if (cookieBuf.length !== headerBuf.length || !crypto.timingSafeEqual(cookieBuf, headerBuf)) {
+      res.status(403).json({
+        success: false,
+        message: 'CSRF token validation failed: Invalid or mismatched X-CSRF-Token header.',
+      });
+      return;
+    }
+  } else if (!req.headers.authorization) {
     res.status(403).json({
       success: false,
-      message: 'CSRF token validation failed: Invalid or missing X-CSRF-Token header.',
+      message: 'CSRF protection: Session cookie or Authorization header required.',
     });
     return;
   }
