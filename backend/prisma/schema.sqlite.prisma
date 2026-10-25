@@ -23,22 +23,29 @@ model Institution {
 
   users           User[]
   certificates    Certificate[]
+
+  @@index([status])
+  @@index([name])
 }
 
 model User {
-  id               String       @id @default(uuid())
-  userId           String       @unique
-  username         String       @unique
-  email            String       @unique
+  id               String          @id @default(uuid())
+  userId           String          @unique
+  username         String          @unique
+  email            String          @unique
   passwordHash     String
-  role             String       @default("PUBLIC_VERIFIER") // SUPER_ADMIN, INSTITUTION_ADMIN, ORGANIZATION_ADMIN, PUBLIC_VERIFIER
-  status           String       @default("ACTIVE") // ACTIVE, INACTIVE
+  role             String          @default("PUBLIC_VERIFIER") // SUPER_ADMIN, INSTITUTION_ADMIN, ORGANIZATION_ADMIN, PUBLIC_VERIFIER
+  status           String          @default("ACTIVE") // ACTIVE, INACTIVE
   institutionId    String?
   refreshTokenHash String?
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
 
-  institution      Institution? @relation(fields: [institutionId], references: [id], onDelete: SetNull)
+  institution      Institution?    @relation(fields: [institutionId], references: [id], onDelete: SetNull)
+  adminLogs        AdminAuditLog[] @relation("AdminLogs")
+
+  @@index([role])
+  @@index([institutionId])
 }
 
 model Certificate {
@@ -57,8 +64,13 @@ model Certificate {
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 
-  institution      Institution       @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  institution      Institution       @relation(fields: [institutionId], references: [id], onDelete: Restrict)
   verificationLogs VerificationLog[]
+
+  @@index([certificateId])
+  @@index([studentName])
+  @@index([status])
+  @@index([institutionId])
 }
 
 model VerificationLog {
@@ -71,4 +83,25 @@ model VerificationLog {
   timestamp     DateTime     @default(now())
 
   certificate   Certificate? @relation(fields: [certificateId], references: [id], onDelete: SetNull)
+
+  @@index([queriedId])
+  @@index([timestamp])
+  @@index([result])
+}
+
+model AdminAuditLog {
+  id         String   @id @default(uuid())
+  adminId    String?
+  action     String
+  targetType String
+  targetId   String?
+  details    String?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  admin      User?    @relation("AdminLogs", fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@index([adminId])
+  @@index([action])
+  @@index([createdAt])
 }
