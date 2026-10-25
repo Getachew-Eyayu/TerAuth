@@ -16,13 +16,14 @@ With AI tools making it easier to create convincing fake certificates and profes
 
 ## 🚀 Key Capabilities
 
-Secure Credential Issuance: Enables authorized institutions to issue digital academic and professional credentials.
+**Secure Credential Issuance**: Enables authorized institutions to issue digital academic and professional credentials.
 
-QR Code Verification: Allows credentials to be checked against trusted server records to identify forged or unauthorized documents, including AI-generated fakes.
+**QR Code Verification**: Allows credentials to be checked against trusted server records to identify forged or unauthorized documents, including AI-generated fakes.
 
-Role-Based Access Control (RBAC): Restricts system operations according to each user's assigned permissions.
+**Role-Based Access Control (RBAC)**: Restricts system operations according to each user's assigned permissions.
 
-Administrative Audit Logging: Records important administrative activities to support accountability and traceability.
+**Administrative Audit Logging**: Records important administrative activities to support accountability and traceability.
+
 ---
 
 ## ❓ Public Verification FAQ
