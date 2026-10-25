@@ -6,7 +6,7 @@
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ed?style=for-the-badge&logo=docker)
 ![Public Verification](https://img.shields.io/badge/Public%20Verification-No%20Account%20Needed-059669?style=for-the-badge)
 
-> **Live demo:** Add the deployed application URL here when the production environment is available.
+(https://terauth.vercel.app/)
 
 TerAuth is a secure digital credential authentication and verification platform designed to combat academic and professional credential fraud, including increasingly sophisticated forgeries generated with AI tools. Instead of judging whether a document *looks* authentic, TerAuth verifies the credential against trusted issuer records and returns a validation result based on the credential's registered data.
 
@@ -41,17 +41,21 @@ The platform is designed for:
 
 ## 📸 Product Screenshots
 
-The following screenshots should be captured from the deployed or local application and kept up to date as the interface evolves:
+
 
 | Public verification | Institution dashboard |
-| :---: | :---: |
-| `docs/screenshots/public-verification.png` | `docs/screenshots/institution-dashboard.png` |
+
+<img width="1247" height="603" alt="image" src="https://github.com/user-attachments/assets/bdad0077-d3de-49ac-af10-5db7faa705a2" />
+<img width="1252" height="684" alt="image" src="https://github.com/user-attachments/assets/c6c38095-5aa8-4a7c-a963-8706644958e3" />
+<img width="1261" height="695" alt="image" src="https://github.com/user-attachments/assets/6c35530f-7d6a-4cc0-82ac-4bcfc45220a2" />
+
 
 | Credential issuance |
-| :---: |
-| `docs/screenshots/credential-issuance.png` |
+<img width="729" height="530" alt="image" src="https://github.com/user-attachments/assets/13a737f0-b51c-4039-ab25-f42010a12e71" />
 
-To display the images, place the files in `docs/screenshots/` using the names above, then replace this table with image links if desired. Avoid publishing real personal information or production credentials in screenshots.
+
+
+
 
 ---
 
@@ -157,16 +161,7 @@ The GitHub Actions workflow (`.github/workflows/ci.yml`) executes on every commi
 
 ---
 
-## 🗺️ Roadmap
 
-- [ ] Publish a hosted demonstration environment with safe sample credentials.
-- [ ] Add complete product screenshots and a short verification walkthrough.
-- [ ] Expand institutional onboarding, issuer approval, and credential revocation workflows.
-- [ ] Add integrations for employer, university, government, and verification-provider workflows.
-- [ ] Improve observability with security dashboards, alerting, and audit-log retention controls.
-- [ ] Prepare the platform for larger-scale adoption through caching, database indexing, high-availability deployment, and load testing.
-
----
 
 ## 📜 Academic Project Notice
 
