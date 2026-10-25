@@ -29,6 +29,7 @@ export const AdminCertificatesPage: React.FC = () => {
         params: {
           status: statusFilter,
           search: searchTerm,
+          includeQr: 'true',
         },
       });
       if (res.data.success) {
@@ -38,6 +39,20 @@ export const AdminCertificatesPage: React.FC = () => {
       console.error('Error fetching certificates:', err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleQuickView = async (cert: Certificate) => {
+    setSelectedCert(cert);
+    if (!cert.qrCodeUrl) {
+      try {
+        const res = await api.get(`/certificates/${cert.id || cert.certificateId}`);
+        if (res.data?.success && res.data?.data) {
+          setSelectedCert(res.data.data);
+        }
+      } catch (err) {
+        console.error('Failed to load full certificate details:', err);
+      }
     }
   };
 
@@ -184,7 +199,7 @@ export const AdminCertificatesPage: React.FC = () => {
                         </Link>
 
                         <button
-                          onClick={() => setSelectedCert(cert)}
+                          onClick={() => handleQuickView(cert)}
                           title="Quick View Record"
                           className="p-1 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded"
                         >
@@ -231,8 +246,15 @@ export const AdminCertificatesPage: React.FC = () => {
                 <span className="text-slate-400 block text-[11px]">{selectedCert.department}</span>
               </div>
 
-              <div className="flex items-center justify-center p-2 bg-slate-50 rounded-xl border border-slate-100">
-                <img src={selectedCert.qrCodeUrl} alt="QR Code" className="w-32 h-32 object-contain" />
+              <div className="flex items-center justify-center p-2 bg-slate-50 rounded-xl border border-slate-100 min-h-[140px]">
+                {selectedCert.qrCodeUrl ? (
+                  <img src={selectedCert.qrCodeUrl} alt={`QR Code for ${selectedCert.certificateId}`} className="w-32 h-32 object-contain" />
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-4 text-slate-400 gap-1.5">
+                    <RefreshCw className="w-5 h-5 animate-spin text-blue-600" />
+                    <span className="text-[11px]">Loading QR Code...</span>
+                  </div>
+                )}
               </div>
 
               {selectedCert.status === 'REVOKED' && (
