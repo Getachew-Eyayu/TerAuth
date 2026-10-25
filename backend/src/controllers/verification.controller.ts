@@ -132,7 +132,7 @@ export class VerificationController {
       }
 
       if (search) {
-        where.queriedId = { contains: (search as string).trim() };
+        where.queriedId = { contains: (search as string).trim(), mode: 'insensitive' };
       }
 
       // If Institution Admin, filter logs only for certificates issued by this institution

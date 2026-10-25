@@ -1,4 +1,5 @@
 import prisma from '../prisma.js';
+import { logger } from '../utils/logger.js';
 
 export class AuditService {
   /**
@@ -22,7 +23,6 @@ export class AuditService {
         },
       });
     } catch (error) {
-      // Audit log failures should not block the response but should be logged to stderr
       console.error('Failed to record verification audit log:', error);
       return null;
     }
@@ -41,7 +41,6 @@ export class AuditService {
     ipAddress?: string;
   }): Promise<void> {
     try {
-      const { logger } = await import('../utils/logger.js');
       logger.info(`ADMIN ACTION [${params.action}] performed on ${params.targetType} ${params.targetId}`, {
         actorId: params.actorId || 'system',
         actorUsername: params.actorUsername || 'unknown',
@@ -53,7 +52,7 @@ export class AuditService {
         timestamp: new Date().toISOString(),
       });
 
-      await (prisma as any).adminAuditLog.create({
+      await prisma.adminAuditLog.create({
         data: {
           adminId: params.actorId || null,
           action: params.action,
