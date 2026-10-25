@@ -58,8 +58,9 @@ export const CreateCertificateSchema = z.object({
     message: 'Invalid issue date format (YYYY-MM-DD)',
   }),
   metadata: z
-    .record(z.union([z.string(), z.number(), z.boolean(), z.null()]))
+    .record(z.union([z.string(), z.number(), z.boolean(), z.null(), z.undefined()]))
     .optional()
+    .nullable()
     .refine(
       (data) => !data || JSON.stringify(data).length <= 4096,
       { message: 'Certificate metadata payload exceeds maximum allowed size of 4KB.' }

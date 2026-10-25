@@ -48,15 +48,16 @@ export const CreateCertificatePage: React.FC = () => {
     setIsLoading(true);
 
     try {
+      const metadata: Record<string, string> = {};
+      if (formData.studentIdNumber.trim()) metadata.studentId = formData.studentIdNumber.trim();
+      if (formData.gradeOrDistinction.trim()) metadata.distinction = formData.gradeOrDistinction.trim();
+
       const payload = {
         studentName: formData.studentName.trim(),
         degree: formData.degree.trim(),
         department: formData.department.trim(),
         issueDate: formData.issueDate,
-        metadata: {
-          studentId: formData.studentIdNumber.trim() || undefined,
-          distinction: formData.gradeOrDistinction.trim() || undefined,
-        },
+        ...(Object.keys(metadata).length > 0 ? { metadata } : {}),
       };
 
       const res = await api.post('/certificates', payload);
