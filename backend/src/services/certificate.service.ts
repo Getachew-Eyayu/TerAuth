@@ -96,11 +96,14 @@ export class CertificateService {
   }
 
   /**
-   * Revoke a certificate with documented justification
+   * Revoke a certificate with documented justification.
+   * Supports lookup by internal database UUID or public certificateId.
    */
-  static async revokeCertificate(certificateId: string, reason: string, institutionId?: string, isSuperAdmin = false) {
-    const certificate = await prisma.certificate.findUnique({
-      where: { certificateId },
+  static async revokeCertificate(idOrCode: string, reason: string, institutionId?: string, isSuperAdmin = false) {
+    const certificate = await prisma.certificate.findFirst({
+      where: {
+        OR: [{ id: idOrCode }, { certificateId: idOrCode }],
+      },
       include: { institution: true },
     });
 
@@ -118,7 +121,7 @@ export class CertificateService {
     }
 
     const updated = await prisma.certificate.update({
-      where: { certificateId },
+      where: { id: certificate.id },
       data: {
         status: 'REVOKED',
         revocationReason: reason.trim(),
@@ -142,8 +145,10 @@ export class CertificateService {
    * Sanitizes all sensitive internal metadata and returns public verification schema
    */
   static async getCertificateForVerification(certificateId: string) {
-    const cert = await prisma.certificate.findUnique({
-      where: { certificateId },
+    const cert = await prisma.certificate.findFirst({
+      where: {
+        OR: [{ certificateId }, { id: certificateId }],
+      },
       include: {
         institution: {
           select: {
