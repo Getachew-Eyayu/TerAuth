@@ -6,11 +6,22 @@
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ed?style=for-the-badge&logo=docker)
 ![Public Verification](https://img.shields.io/badge/Public%20Verification-No%20Account%20Needed-059669?style=for-the-badge)
 
-TerAuth is a secure digital credential authentication and verification platform designed to combat academic and professional credential fraud, including increasingly sophisticated forgeries generated using artificial intelligence (AI).
+> **Live demo:** Add the deployed application URL here when the production environment is available.
 
-💡 The Idea
+TerAuth is a secure digital credential authentication and verification platform designed to combat academic and professional credential fraud, including increasingly sophisticated forgeries generated with AI tools. Instead of judging whether a document *looks* authentic, TerAuth verifies the credential against trusted issuer records and returns a validation result based on the credential's registered data.
 
-With AI tools making it easier to create convincing fake certificates and professional credentials, verifying the authenticity of qualifications has become increasingly important. TerAuth addresses this challenge by enabling institutions to issue digital credentials that can be verified against trusted server records rather than relying solely on the appearance of a document.
+**TerAuth replaces trust in the appearance of a certificate with verifiable trust in its authenticity—helping combat credential fraud in the age of AI.**
+
+## 💡 The Idea
+
+AI tools make it easier to create convincing fake certificates and professional credentials. A visually convincing document is therefore not enough to establish trust. TerAuth gives authorized institutions a controlled way to issue credentials and gives third parties a fast, public way to verify them against trusted server records.
+
+The platform is designed for:
+
+- **Employers**, who can confirm qualifications during recruitment without waiting for manual email or phone confirmation.
+- **Universities and training institutions**, which can issue and validate credentials through a centralized registry.
+- **Government, border, and compliance officials**, who can check credential status using a QR code and the public verification page.
+- **Students and graduates**, who can share credentials that are easier for others to validate.
 
 ---
 
@@ -18,18 +29,42 @@ With AI tools making it easier to create convincing fake certificates and profes
 
 **Secure Credential Issuance**: Enables authorized institutions to issue digital academic and professional credentials.
 
-**QR Code Verification**: Allows credentials to be checked against trusted server records to identify forged or unauthorized documents, including AI-generated fakes.
+**QR Code Verification**: Allows credentials to be checked against trusted server records to identify forged, altered, revoked, or unauthorized documents, including AI-generated fakes.
 
 **Role-Based Access Control (RBAC)**: Restricts system operations according to each user's assigned permissions.
 
 **Administrative Audit Logging**: Records important administrative activities to support accountability and traceability.
+
+**Public Verification**: Allows anyone with a credential QR code or verification reference to check its status without creating an account.
+
+---
+
+## 📸 Product Screenshots
+
+The following screenshots should be captured from the deployed or local application and kept up to date as the interface evolves:
+
+| Public verification | Institution dashboard |
+| :---: | :---: |
+| `docs/screenshots/public-verification.png` | `docs/screenshots/institution-dashboard.png` |
+
+| Credential issuance |
+| :---: |
+| `docs/screenshots/credential-issuance.png` |
+
+To display the images, place the files in `docs/screenshots/` using the names above, then replace this table with image links if desired. Avoid publishing real personal information or production credentials in screenshots.
 
 ---
 
 ## ❓ Public Verification FAQ
 
 #### Q: Does an employer or student need an account to scan the QR code?
-> **A: No.** Verification is **100% public, open, and anonymous**. Any person—whether an employer, border official, student, or university registrar—can scan the QR code using their default smartphone camera or visit `https://terauth.vercel.app/verify` in any web browser.
+> **A: No.** Verification is **public, open, and anonymous**. Anyone—whether an employer, border official, student, or university registrar—can scan the QR code using a smartphone camera and view the credential's verification result.
+
+#### Q: Does TerAuth decide whether a certificate looks genuine?
+> **A: No.** TerAuth does not rely on visual appearance alone. It checks the credential's identifier and data against records maintained by the issuing institution. This makes verification more reliable against edited documents and AI-generated forgeries.
+
+#### Q: What should a verifier do if a credential cannot be verified?
+> **A:** Treat the credential as unverified and contact the issuing institution through an independently trusted channel. A failed verification result should not be “overridden” based only on the document's appearance.
 
 ---
 
@@ -46,15 +81,20 @@ With AI tools making it easier to create convincing fake certificates and profes
 
 ## 🔒 Security Architecture
 
-| Security Layer | Implementation Mechanism | Protection Guarantee |
+These controls describe the intended implementation and should remain backed by automated tests and code review whenever the security-sensitive code changes. The project should not claim stronger guarantees than the current implementation and test suite demonstrate.
+
+| Security Layer | Implementation Mechanism | Protection Goal |
 | :--- | :--- | :--- |
-| **Authentication** | JWT Access (15m) + Rotating Refresh Token (7d) | Minimizes token hijacking window; revokes refresh tokens on reuse or compromise. |
-| **Session Invalidation**| `refreshTokenHash: null` on password change / deactivation | Terminates all active attacker sessions instantly upon credential updates. |
-| **Anti-CSRF** | Double-submit `XSRF-TOKEN` cookie + `X-CSRF-Token` header | Enforces cryptographically safe `timingSafeEqual` validation on state-changing requests. |
-| **Reverse Proxy Trust**| `app.set('trust proxy', 1)` | Correctly extracts real client IPs across Nginx, Vercel, and Cloudflare load balancers. |
-| **Rate Limiting** | Sliding window IP rate limiting | Mitigates brute-force attacks and denial-of-service on public verification endpoints. |
-| **Referential Integrity**| `onDelete: Restrict` on Institution $\rightarrow$ Certificate | Eliminates catastrophic credential loss if an institution record is removed. |
-| **Error Sanitization** | Production stack trace redaction | Prevents internal server file paths or environment variables from leaking in errors. |
+| **Authentication** | JWT Access (15m) + Rotating Refresh Token (7d) | Limits the access-token exposure window and supports refresh-token revocation on reuse or compromise. |
+| **Session Invalidation** | `refreshTokenHash: null` on password change / deactivation | Prevents existing refresh sessions from continuing after sensitive account changes. |
+| **Anti-CSRF** | Double-submit `XSRF-TOKEN` cookie + `X-CSRF-Token` header | Protects state-changing browser requests with constant-time token comparison. |
+| **Reverse Proxy Trust** | `app.set('trust proxy', 1)` | Supports correct client-IP handling behind the configured reverse proxy. |
+| **Rate Limiting** | Sliding-window IP rate limiting | Reduces brute-force and abuse risk on authentication and public verification endpoints. |
+| **Referential Integrity** | `onDelete: Restrict` on Institution → Certificate | Prevents accidental deletion of certificates when an institution record is removed. |
+| **Error Sanitization** | Production stack-trace redaction | Reduces the risk of exposing internal paths, implementation details, or environment values. |
+| **Auditability** | Administrative audit logging | Provides an activity trail for accountability; retention, access control, and tamper-resistance should be validated separately. |
+
+For production deployment, verify refresh-token rotation, session invalidation, audit-log behavior, rate limits, and authorization boundaries with integration tests rather than relying only on documentation.
 
 ---
 
@@ -114,6 +154,17 @@ The GitHub Actions workflow (`.github/workflows/ci.yml`) executes on every commi
 3. Seeds test credentials and users.
 4. Executes backend integration tests (`jest`).
 5. Performs complete frontend production build (`tsc && vite build`).
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] Publish a hosted demonstration environment with safe sample credentials.
+- [ ] Add complete product screenshots and a short verification walkthrough.
+- [ ] Expand institutional onboarding, issuer approval, and credential revocation workflows.
+- [ ] Add integrations for employer, university, government, and verification-provider workflows.
+- [ ] Improve observability with security dashboards, alerting, and audit-log retention controls.
+- [ ] Prepare the platform for larger-scale adoption through caching, database indexing, high-availability deployment, and load testing.
 
 ---
 
