@@ -43,15 +43,12 @@ The platform is designed for:
 
 
 
-| Public verification | Institution dashboard |
-
 <img width="1247" height="603" alt="image" src="https://github.com/user-attachments/assets/bdad0077-d3de-49ac-af10-5db7faa705a2" />
 <img width="1252" height="684" alt="image" src="https://github.com/user-attachments/assets/c6c38095-5aa8-4a7c-a963-8706644958e3" />
+<img width="1271" height="686" alt="image" src="https://github.com/user-attachments/assets/0d4a5109-d90c-49f3-a558-ade209ce3a01" />
 <img width="1261" height="695" alt="image" src="https://github.com/user-attachments/assets/6c35530f-7d6a-4cc0-82ac-4bcfc45220a2" />
+<img width="1022" height="690" alt="image" src="https://github.com/user-attachments/assets/8e3c2b1b-4150-49cd-aa05-1f6489c7b42a" />
 
-
-| Credential issuance |
-<img width="729" height="530" alt="image" src="https://github.com/user-attachments/assets/13a737f0-b51c-4039-ab25-f42010a12e71" />
 
 
 
