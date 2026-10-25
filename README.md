@@ -6,24 +6,20 @@
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ed?style=for-the-badge&logo=docker)
 ![Public Verification](https://img.shields.io/badge/Public%20Verification-No%20Account%20Needed-059669?style=for-the-badge)
 
-**TerAuth** is an enterprise-grade digital credential authentication and verification platform engineered to eradicate academic and professional credential fraud. It provides cryptographic certificate issuance, anti-tamper QR code verification linking directly to verified server records, granular role-based access control (RBAC), immutable administrative audit logging, and automated containerized deployment.
+TerAuth is a secure digital credential authentication and verification platform designed to combat academic and professional credential fraud, including increasingly sophisticated forgeries generated using artificial intelligence (AI).
+
+💡 The Idea
+
+With AI tools making it easier to create convincing fake certificates and professional credentials, verifying the authenticity of qualifications has become increasingly important. TerAuth addresses this challenge by enabling institutions to issue digital credentials that can be verified against trusted server records rather than relying solely on the appearance of a document.
 
 ---
 
 ## 🚀 Key Capabilities
 
-- **Instant Public Verification**: Anyone can verify credentials by entering a Certificate ID or scanning the physical QR code with any smartphone camera—**zero login, zero app install, zero third-party account required**.
-- **Server-Side Truth Protocol**: QR codes never store raw student PII directly. They strictly embed an authoritative verification link (`https://terauth.vercel.app/verify/:certificateId`), preventing offline tampering and forgery.
-- **Role-Based Access Control (RBAC)**:
-  - `SUPER_ADMIN`: National oversight, institution accreditation review, user management, system-wide certificate monitoring, and immutable relational audit logs.
-  - `INSTITUTION_ADMIN`: Accredited institution portal to issue credentials (`TER-YYYY-XXXXXXXX`), manage records, update institution profile details, change passwords, and revoke invalid certificates.
-  - `ORGANIZATION_ADMIN`: Enterprise verification registry and employment qualification checks.
-  - `PUBLIC_VERIFIER`: Rate-limited anonymous verification for employers, universities, and students.
-- **Relational Integrity & Audit Logging**:
-  - `onDelete: Restrict` prevents accidental cascade deletion of issued credentials.
-  - Relational `AdminAuditLog` table permanently tracks administrative operations with IP and actor telemetry.
-- **Active Session Revocation**: Changing passwords or deactivating an account immediately nullifies all active refresh tokens.
-
+Secure Credential Issuance: Enables authorized institutions to issue digital academic and professional credentials.
+QR Code Verification: Allows credentials to be checked against trusted server records to identify forged or unauthorized documents, including AI-generated fakes.
+Role-Based Access Control (RBAC): Restricts system operations according to each user's assigned permissions.
+Administrative Audit Logging: Records important administrative activities to support accountability and traceability.
 ---
 
 ## ❓ Public Verification FAQ
