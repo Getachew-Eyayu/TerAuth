@@ -151,8 +151,8 @@ export const VerifyPage: React.FC = () => {
           <div className="bg-white rounded-2xl p-12 border border-slate-200 text-center space-y-4 shadow-sm">
             <RefreshCw className="w-8 h-8 text-blue-600 animate-spin mx-auto" />
             <div className="space-y-1">
-              <p className="text-sm font-bold text-slate-800">Contacting TerAuth Verification Node...</p>
-              <p className="text-xs text-slate-500">Querying real-time database ledger and revocation index.</p>
+              <p className="text-sm font-bold text-slate-800">Checking...</p>
+              <p className="text-xs text-slate-500">Verifying credential authenticity...</p>
             </div>
           </div>
         )}
