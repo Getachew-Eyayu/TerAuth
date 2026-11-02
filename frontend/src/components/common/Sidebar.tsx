@@ -10,7 +10,7 @@ import {
   School,
   LogOut,
   ExternalLink,
-  Shield,
+  ShieldCheck,
   Menu,
   X,
 } from 'lucide-react';
@@ -52,8 +52,8 @@ export const Sidebar: React.FC = () => {
       {/* Brand / Role header with mobile toggle */}
       <div className="p-4 md:p-5 border-b border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-sm flex-shrink-0">
-            <Shield className="w-4 h-4" />
+          <div className="w-8 h-8 rounded-lg bg-navy-950 border border-slate-700/80 flex items-center justify-center text-white shadow-sm flex-shrink-0">
+            <ShieldCheck className="w-4 h-4 text-blue-400" />
           </div>
           <div>
             <h2 className="font-extrabold text-sm text-white tracking-wide">

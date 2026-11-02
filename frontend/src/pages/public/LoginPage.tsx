@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Shield, Lock, User, ArrowRight, AlertCircle, RefreshCw, KeyRound, Sparkles } from 'lucide-react';
+import { ShieldCheck, Lock, User, ArrowRight, AlertCircle, RefreshCw, KeyRound, Sparkles } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 
@@ -56,7 +56,7 @@ export const LoginPage: React.FC = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <Link to="/" className="inline-flex items-center gap-2.5 mb-2">
           <div className="w-10 h-10 rounded-xl bg-navy-900 flex items-center justify-center text-white shadow-md shadow-navy-900/20">
-            <Shield className="w-6 h-6 text-blue-400" />
+            <ShieldCheck className="w-6 h-6 text-blue-400" />
           </div>
           <span className="font-extrabold text-2xl tracking-tight text-slate-900">
             TER<span className="text-blue-600">AUTH</span>

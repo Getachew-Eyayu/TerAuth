@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Lock, FileCheck, ExternalLink } from 'lucide-react';
+import { ShieldCheck, Lock, FileCheck, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Footer: React.FC = () => {
@@ -10,8 +10,8 @@ export const Footer: React.FC = () => {
           {/* Column 1: Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2.5 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
-                <Shield className="w-5 h-5" />
+              <div className="w-8 h-8 rounded-lg bg-navy-950 border border-slate-700/80 flex items-center justify-center text-white">
+                <ShieldCheck className="w-5 h-5 text-blue-400" />
               </div>
               <span className="font-extrabold text-xl tracking-tight text-white">TER<span className="text-blue-400">AUTH</span></span>
             </div>

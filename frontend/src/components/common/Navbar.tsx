@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Shield, CheckCircle, Building2, UserCircle, LogOut, LayoutDashboard, QrCode, Menu, X } from 'lucide-react';
+import { ShieldCheck, CheckCircle, Building2, UserCircle, LogOut, LayoutDashboard, QrCode, Menu, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export const Navbar: React.FC = () => {
@@ -31,7 +31,7 @@ export const Navbar: React.FC = () => {
           {/* Logo & National Brand */}
           <Link to="/" onClick={closeMobile} className="flex items-center gap-3 group">
             <div className="w-10 h-10 rounded-lg bg-navy-900 flex items-center justify-center text-white shadow-md shadow-navy-900/20 group-hover:bg-blue-700 transition-colors">
-              <Shield className="w-6 h-6 text-blue-400" />
+              <ShieldCheck className="w-6 h-6 text-blue-400" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
