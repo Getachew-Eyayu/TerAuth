@@ -78,11 +78,12 @@ The platform is designed for:
 ## 🛠 Technology Stack
 
 - **Frontend**: React 18, Vite, TypeScript, Tailwind CSS, Lucide Icons, Html5-Qrcode.
-- **Backend**: Node.js 20, Express, TypeScript, Helmet, CORS, Express-Rate-Limit, Zod.
-- **Database & ORM**: PostgreSQL 16 (local container) / Neon PostgreSQL (cloud), Prisma ORM 5.22.
+- **Backend**: Node.js 20, Express, TypeScript, CORS, Express-Rate-Limit, Zod.
+- **Database & ORM**: PostgreSQL 16 (local) / Neon PostgreSQL (cloud), Prisma ORM 5.22.
 - **Containerization**: Docker, Docker Compose, multi-stage Alpine builds.
-- **Security & Crypto**: JWT (15-min Access + 7-day Refresh rotation), Bcrypt (12 salt rounds), Double-Submit Anti-CSRF (`crypto.timingSafeEqual`), Reverse Proxy Trust (`trust proxy: 1`).
-- **CI/CD**: GitHub Actions quality pipeline with containerized ephemeral PostgreSQL service.
+- **Security & Crypto**: JWT, Bcrypt (12 salt rounds), Double-Submit Anti-CSRF (`crypto.timingSafeEqual`), Reverse Proxy Trust (`trust proxy: 1`).
+- **Deployment & Hosting**: Vercel, Neon PostgreSQL.
+
 
 ---
 
