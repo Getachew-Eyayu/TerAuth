@@ -143,7 +143,7 @@ export const LoginPage: React.FC = () => {
                 onClick={() => setDemoCredentials('aait_admin', 'Institution@12345')}
                 className="p-2 text-left bg-slate-50 hover:bg-blue-50 hover:border-blue-200 border border-slate-200 rounded-lg transition-colors group"
               >
-                <div className="font-bold text-slate-800 group-hover:text-blue-700">AAIT University</div>
+                <div className="font-bold text-slate-800 group-hover:text-blue-700">Addis Ababa Science and Technology University (AASTU)</div>
                 <div className="text-slate-500 font-mono text-[10px]">aait_admin</div>
               </button>
             </div>

@@ -124,6 +124,12 @@ docker compose logs -f
 docker compose down
 ```
 
+### Demo Accounts
+| Role | Username | Password |
+| :--- | :--- | :--- |
+| **Super Admin** | `superadmin` | `Admin@12345` |
+| **Addis Ababa Science and Technology University (AASTU)** | `aait_admin` | `Institution@12345` |
+
 ### Local Service Ports
 - **Frontend Portal**: [http://localhost:5173](http://localhost:5173)
 - **Backend API & Health Check**: [http://localhost:5000/api/health](http://localhost:5000/api/health)
