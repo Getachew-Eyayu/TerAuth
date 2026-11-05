@@ -6,14 +6,15 @@
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ed?style=for-the-badge&logo=docker)
 ![Public Verification](https://img.shields.io/badge/Public%20Verification-No%20Account%20Needed-059669?style=for-the-badge)
 
-Website: https://terauth.vercel.app/
+Website Link: https://terauth.vercel.app/
 
 ## 🎥 Project Demonstration
 
 Watch our 5-minute demonstration to see TerAuth in action, including its credential issuance workflow, authentication mechanisms, and system architecture.
 
-**[▶ Watch the TerAuth Project Demonstration]([(https://drive.google.com/file/d/1dZ5qfnh1crXLaFEONk2Tw0L-zwaWmKzm/view?usp=sharing))**
+**[▶ Watch the TerAuth Project Demonstration](https://drive.google.com/file/d/1dZ5qfnh1crXLaFEONk2Tw0L-zwaWmKzm/view?usp=sharing)**
 
+**Overview**
 TerAuth is a secure digital credential authentication and verification platform. It is designed to combat academic and professional credential fraud, including increasingly sophisticated forgeries generated with AI tools. Instead of judging whether a document *looks* authentic, TerAuth verifies the credential against trusted issuer records and returns a validation result based on the credential's registered data.
 
 **TerAuth replaces trust in the appearance of a certificate with verifiable trust in its authenticity - helping combat credential fraud in the age of AI.**
