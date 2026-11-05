@@ -12,7 +12,8 @@ Watch our 5-minute demonstration to see TerAuth in action, including its credent
 
 **[▶ Watch the TerAuth Project Demonstration](https://drive.google.com/file/d/1dZ5qfnh1crXLaFEONk2Tw0L-zwaWmKzm/view?usp=sharing)**
 
-**Overview**
+## Overview
+
 TerAuth is a secure digital credential authentication and verification platform. It is designed to combat academic and professional credential fraud, including increasingly sophisticated forgeries generated with AI tools. Instead of judging whether a document *looks* authentic, TerAuth verifies the credential against trusted issuer records and returns a validation result based on the credential's registered data.
 
 **TerAuth replaces trust in the appearance of a certificate with verifiable trust in its authenticity - helping combat credential fraud in the age of AI.**
@@ -79,7 +80,7 @@ The platform is designed for:
 - **Frontend**: React 18, Vite, TypeScript, Tailwind CSS, Lucide Icons, Html5-Qrcode.
 - **Backend**: Node.js 20, Express, TypeScript, Helmet, CORS, Express-Rate-Limit, Zod.
 - **Database & ORM**: PostgreSQL 16 (local container) / Neon PostgreSQL (cloud), Prisma ORM 5.22.
-- **Containerization**: Docker, Docker Compose, Nginx reverse proxy, multi-stage Alpine builds.
+- **Containerization**: Docker, Docker Compose, multi-stage Alpine builds.
 - **Security & Crypto**: JWT (15-min Access + 7-day Refresh rotation), Bcrypt (12 salt rounds), Double-Submit Anti-CSRF (`crypto.timingSafeEqual`), Reverse Proxy Trust (`trust proxy: 1`).
 - **CI/CD**: GitHub Actions quality pipeline with containerized ephemeral PostgreSQL service.
 
@@ -150,24 +151,7 @@ npm install
 npm run dev
 ```
 
----
 
-## 🧪 CI/CD Pipeline
-
-The GitHub Actions workflow (`.github/workflows/ci.yml`) executes on every commit and PR:
-1. Spins up an ephemeral `postgres:16-alpine` service container.
-2. Synchronizes schema via `prisma db push --skip-generate`.
-3. Seeds test credentials and users.
-4. Executes backend integration tests (`jest`).
-5. Performs complete frontend production build (`tsc && vite build`).
-
----
-
-
-
-## 📜 Academic Project Notice
-
-Developed as a national digital credentials infrastructure capstone demonstrating secure academic qualification registry, anti-tamper QR verification, and real-time validation.
 
 ## 👥 Developers (Group Members)
 1. **Getachew Eyayu Adugna**
