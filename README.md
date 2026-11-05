@@ -1,10 +1,8 @@
 # TerAuth: National Digital Certificate Authentication & Verification Platform
 
 ![Platform](https://img.shields.io/badge/Platform-TerAuth-1d4ed8?style=for-the-badge&logo=shield)
-![Build](https://img.shields.io/badge/CI%2FCD-Passing-10b981?style=for-the-badge)
 ![Security](https://img.shields.io/badge/Security-RBAC%20%2B%20JWT%20%2B%20CSRF%20%2B%20Bcrypt-0f172a?style=for-the-badge)
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ed?style=for-the-badge&logo=docker)
-![Public Verification](https://img.shields.io/badge/Public%20Verification-No%20Account%20Needed-059669?style=for-the-badge)
 
 Website Link: https://terauth.vercel.app/
 
