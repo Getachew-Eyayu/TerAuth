@@ -157,8 +157,16 @@ cd frontend
 npm install
 npm run dev
 ```
+## 🔭 Future Development
 
+TerAuth is designed to evolve into a broader digital credential verification infrastructure.
 
+Planned improvements include:
+
+- **Institutional Expansion:** Onboarding additional universities and educational institutions.
+- **API Integration:** Enabling trusted organizations and third-party platforms to integrate credential verification into their existing systems.
+
+  
 
 ## 👥 Developers (Group Members)
 1. **Getachew Eyayu Adugna**
